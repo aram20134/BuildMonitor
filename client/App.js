@@ -1,11 +1,24 @@
-import axios from 'axios';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, Button, ActivityIndicator, Image } from 'react-native';
-
+import { createContext, useContext, useState } from 'react';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Navigate from './compontents/Navigate';
 
+
+export const BuildMonitor = createContext(null)
+
 export default function App() {
+  const [isAuth, setIsAuth] = useState(null)
+  const [user, setUser] = useState({})
+
+  // const insets = useSafeAreaInsets()
+
   return (
-    <Navigate />
+    <SafeAreaProvider>
+      <BuildMonitor.Provider value={{
+        isAuth, setIsAuth,
+        user, setUser
+      }}>
+        <Navigate />
+      </BuildMonitor.Provider>
+    </SafeAreaProvider>
   );
 }

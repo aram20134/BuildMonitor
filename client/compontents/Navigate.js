@@ -1,19 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { ActivityIndicator, SafeAreaView, Text, View } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PrivateRoutes, PublicRoutes } from '../other/routes'
+import { BuildMonitor } from '../App';
+import { createDrawerNavigator, DrawerToggleButton } from '@react-navigation/drawer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import CustomDrawer from './CustomDrawer';
+import Home from '../screens/Home';
+import Test from '../screens/Test';
 
 const Stack = createNativeStackNavigator()
+const Drawer = createDrawerNavigator()
+
+const Root = () => [
+    <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName='BuildMonitor'>
+        <Drawer.Screen name='BuildMonitor' component={Home} options={{headerShadowVisible: false, headerStyle: {backgroundColor: '#42b3ff'}}} />
+    </Drawer.Navigator>
+]
 
 const Navigate = () => {
-    const [isAuth, setIsAuth] = useState(null)
-
+    const insets = useSafeAreaInsets()
+    const { isAuth, setIsAuth, setUser } = useContext(BuildMonitor)
     useEffect(() => {
         const checkAuth = async () => {
+            // AsyncStorage.removeItem('token')
             const isAuth = await AsyncStorage.getItem('token')
+            setUser(isAuth)
             console.log(isAuth)
             if (isAuth === null) {
                 setIsAuth(false)
@@ -30,7 +45,7 @@ const Navigate = () => {
         )
     }
     
-    return isAuth === false ? (
+    return !isAuth ? (
         <NavigationContainer>
             <Stack.Navigator initialRouteName='Login'>
                 {PublicRoutes.map((route) => <Stack.Screen key={route.name} name={route.name} component={route.component} options={route.options} />)}
@@ -38,10 +53,12 @@ const Navigate = () => {
         </NavigationContainer>
     ) : (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName='BuildMonitor' >
+                <Stack.Screen name='Root' component={Root} options={{headerShown: false}} />
                 {PrivateRoutes.map((route) => <Stack.Screen key={route.name} name={route.name} component={route.component} options={route.options} />)}
             </Stack.Navigator>
         </NavigationContainer>
+        
     )
 }
 

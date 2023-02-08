@@ -17,6 +17,7 @@ const MyError = ({errorMsg, trigger}) => {
     const Animate = () => {
         bottom.value = withSpring(10)
         opacity.value = withTiming(1)
+        
         let timer = setTimeout(() => {
             bottom.value = withSpring(-150)
             opacity.value = withTiming(0)

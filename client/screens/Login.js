@@ -1,23 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Button, Image, ImageBackground, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { useContext, useState } from "react";
+import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { checkLogin, log } from "../api/userAPI";
+import { BuildMonitor } from "../App";
 import MyButton from "../compontents/MyButton";
 import MyError from "../compontents/MyError";
 
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false)
   const [nextStep, setNextStep] = useState(false)
   const [triggerError, setTriggerError] = useState(false)
 
-  const inputPassword = useRef()
+  const { setIsAuth, setUser } = useContext(BuildMonitor)
 
   const checkName = () => {
     setLoading(true)
@@ -31,7 +30,12 @@ const Login = () => {
 
   const LogIn = (e) => {
     setLoading(true)
-    log(name, password).then(res => console.log(res)).catch(e => {
+    log(name, password).then(res => {
+      AsyncStorage.setItem('token', JSON.stringify(res))
+      setIsAuth(true)
+      setUser(res)
+      return res
+    }).catch(e => {
       setTriggerError(true)
       setTriggerError(false)
     }).finally(() => setLoading(false))
@@ -51,10 +55,10 @@ const Login = () => {
         <View style={{position:'relative', display:'flex'}}>
           <View style={{display:'flex', justifyContent:'center', marginBottom: 15}}>
             <Image resizeMode='contain' resizeMethod='resize' source={require('../assets/user.png')} style={{position:'absolute', zIndex:10, width:20, left:5}} />
-            <TextInput autoComplete="email" returnKeyType="next" blurOnSubmit={false} onSubmitEditing={checkName} editable={!nextStep} style={{...styles.TextInput, paddingLeft: 30}} onChangeText={setName} value={name} placeholder='Имя пользователя (e-mail)' />
+            <TextInput cursorColor={'black'} autoComplete="email" returnKeyType="next" blurOnSubmit={false} onSubmitEditing={checkName} editable={!nextStep} style={{...styles.TextInput, paddingLeft: 30, backgroundColor: nextStep ? 'white' : '#d4edff'}} onChangeText={setName} value={name} placeholder='Имя пользователя (e-mail)' />
           </View>
         </View>
-        {nextStep && <TextInput autoFocus={true} blurOnSubmit={false} onSubmitEditing={LogIn} secureTextEntry={true} style={{...styles.TextInput, marginBottom: 15}} onChangeText={setPassword} value={password} placeholder='Пароль' />}
+        {nextStep && <TextInput cursorColor={'black'} autoFocus={true} blurOnSubmit={false} onSubmitEditing={LogIn} secureTextEntry={true} style={{...styles.TextInput, marginBottom: 15}} onChangeText={setPassword} value={password} placeholder='Пароль' />}
         <MyButton title='Продолжить' onPress={!nextStep ? checkName : LogIn} disabled={loading}  />
       </View>
       <MyError errorMsg={'Неверное имя пользователья (e-mail) или пароль.'} trigger={triggerError} />
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   TextInput: {
-    backgroundColor: '#abdcff',
+    backgroundColor: '#d4edff',
     padding: 10,
     borderBottomWidth: 2,
     borderBottomColor: 'blue',
