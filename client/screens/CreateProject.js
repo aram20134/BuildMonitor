@@ -6,6 +6,7 @@ import MyInput from "../compontents/MyInput"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { createProject } from "../api/projectAPI"
 
 function reducer(state, action) {
     switch (action.type) {
@@ -22,7 +23,7 @@ function reducer(state, action) {
     case 'projectWebPage':
         return {...state, projectWebPage: action.payload};
     case 'projectStreet':
-        return {...state, projectDateStart: action.payload};
+        return {...state, projectStreet: action.payload};
     case 'projectPostalCode':
         return {...state, projectPostalCode: action.payload};
     case 'projectCountry':
@@ -52,10 +53,31 @@ const CreateProject = ({ navigation }) => {
     const [projectInfo, dispatch] = useReducer(reducer, initialState)
 
     useEffect(() => {
+      console.log(image)
+    }, [image])
+    
+
+    useEffect(() => {
+        const saveProject = () => {
+            // console.log(image)
+            const project = new FormData()
+            project.append('projectName', projectInfo.projectName)
+            // project.append('projectCode', projectInfo.projectCode)
+            // project.append('projectDateStart', projectInfo.projectDateStart)
+            // project.append('projectDateEnd', projectInfo.projectDateEnd)
+            // project.append('projectDescription', projectInfo.projectDescription)
+            // project.append('projectWebPage', projectInfo.projectWebPage)
+            // project.append('projectStreet', projectInfo.projectStreet)
+            // project.append('projectPostalCode', projectInfo.projectPostalCode)
+            // project.append('projectCountry', projectInfo.projectCountry)
+            // project.append('projectCity', projectInfo.projectCity)
+            // project.append('image', image)
+            createProject(project).then((res) => console.log(res)).catch(e => console.log(e.message))
+        }
       navigation.setOptions({
         headerRight: () => (
             <GestureHandlerRootView>
-                <BaseButton title={'Сохранить'} onPress={() => console.log('first')}>
+                <BaseButton title={'Сохранить'} onPress={saveProject}>
                     <View accessible accessibilityRole="button">
                         <Text style={{padding:10, fontWeight:'bold'}}>Сохранить</Text>
                     </View>
@@ -64,7 +86,7 @@ const CreateProject = ({ navigation }) => {
         )
       })
     
-    }, [navigation])
+    }, [navigation, image])
 
     const chooseDate = (dateName) => {
         DateTimePickerAndroid.open({
@@ -82,15 +104,15 @@ const CreateProject = ({ navigation }) => {
         <KeyboardAvoidingView style={styles.container}>
             <ScrollView style={{width:'100%'}}>
                 <MyInput type='image' image={image} setImage={setImage} />
-                <MyInput type='input' required onChangeText={(txt) => dispatch({type: 'projectName', payload: txt})} placeholder='Введите название проекта' title='Название проекта' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectCode', payload: txt})} placeholder='Введите Код проекта' title='Код проекта' />
+                <MyInput type='input' returnKeyType="next" required onChangeText={(txt) => dispatch({type: 'projectName', payload: txt})} placeholder='Введите название проекта' title='Название проекта' />
+                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCode', payload: txt})} placeholder='Введите Код проекта' title='Код проекта' />
                 <MyInput type='date' value={projectInfo.projectDateStart && format(projectInfo.projectDateStart, 'dd.MM.yyyy', {locale: ru})} onPress={() => chooseDate('projectDateStart')} placeholder='Установите дату' title='Начало проекта' />
                 <MyInput type='date' value={projectInfo.projectDateEnd && format(projectInfo.projectDateEnd, 'dd.MM.yyyy', {locale: ru})} onPress={() => chooseDate('projectDateEnd')} placeholder='Установите дату' title='Завершение проекта' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectDescription', payload: txt})} placeholder='Введите описание' title='Описание' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectWebPage', payload: txt})} placeholder='Введите веб-страницу проекта' title='Веб-страница проекта' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectStreet', payload: txt})} placeholder='Введите улицу' title='Улица' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectPostalCode', payload: txt})} placeholder='Введите почтовый индекс' title='Почтовый индекс' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectCountry', payload: txt})} placeholder='Введите страну' title='Страна' />
+                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectDescription', payload: txt})} placeholder='Введите описание' title='Описание' />
+                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectWebPage', payload: txt})} placeholder='Введите веб-страницу проекта' title='Веб-страница проекта' />
+                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectStreet', payload: txt})} placeholder='Введите улицу' title='Улица' />
+                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectPostalCode', payload: txt})} placeholder='Введите почтовый индекс' title='Почтовый индекс' />
+                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCountry', payload: txt})} placeholder='Введите страну' title='Страна' />
                 <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectCity', payload: txt})} placeholder='Введите Город' title='Город' />
                 {/* <Button title="pick img" onPress={test} /> */}
             </ScrollView>

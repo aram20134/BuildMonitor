@@ -2,20 +2,19 @@ import { Image, StyleSheet, Text, View } from "react-native"
 import { BaseButton, BorderlessButton, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import * as ImagePicker from 'expo-image-picker'
 
-const MyInput = ({title, required = false, placeholder, onChangeText, value, type, onPress, image, setImage}) => {
+const MyInput = ({title, required = false, placeholder, onChangeText, value, type, onPress, image, setImage, returnKeyType}) => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
+            // allowsEditing: true,
+            // aspect: [4, 3],
             quality: 1,
           });
-      
-          console.log(result);
-      
+          console.log(result.assets[0]);
+          
           if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            setImage(result.assets[0]);
           }
     }
 
@@ -24,7 +23,7 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
             return (
                 <View style={styles.inputContainer}>
                     <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
-                    <TextInput value={value} placeholder={placeholder} onChangeText={onChangeText} />
+                    <TextInput returnKeyType={returnKeyType} value={value} placeholder={placeholder} onChangeText={onChangeText} />
                 </View>
             )
         case 'date':
@@ -48,9 +47,15 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
                     <View style={{...styles.inputContainer}}>
                         <Text>Логотип проекта</Text>
                         <BaseButton onPress={pickImage}>
-                            <View accessible accessibilityRole="button" style={styles.imgPick}>
-                                <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/camera.png')} />
-                                <Text style={{color:'#10dd', fontSize:16}}>Добавить фото</Text>
+                            <View accessible accessibilityRole="button" style={{...styles.imgPick, borderWidth: image ? 0 : 2}}>
+                                {image ? (
+                                    <Image source={{uri: image.uri, width: image.width, height: image.height}} style={{flex: 1}} resizeMode='contain' resizeMethod='scale' />
+                                ) : (
+                                    <>
+                                        <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/camera.png')} />
+                                        <Text style={{color:'#10dd', fontSize:16}}>Добавить фото</Text>
+                                    </>
+                                )}
                             </View>
                         </BaseButton>
                     </View>
@@ -88,10 +93,11 @@ const styles = StyleSheet.create({
         borderColor: 'blue',
         borderWidth: 2,
         padding:35,
+        height:150,
         justifyContent:'center',
         alignItems:'center',
         borderStyle:'dotted',
-        flexDirection:'row'
+        flexDirection:'row',
     }
 });
   

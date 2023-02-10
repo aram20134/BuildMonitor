@@ -28,7 +28,7 @@ const Navigate = () => {
         const checkAuth = async () => {
             // AsyncStorage.removeItem('token')
             const isAuth = await AsyncStorage.getItem('token')
-            setUser(isAuth)
+            setUser(JSON.parse(isAuth))
             console.log(isAuth)
             if (isAuth === null) {
                 setIsAuth(false)
