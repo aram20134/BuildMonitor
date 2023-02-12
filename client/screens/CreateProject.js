@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react"
+import { useContext, useEffect, useReducer, useState } from "react"
 import { Button, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from "react-native"
 import { BaseButton, TextInput, BorderlessButton, GestureHandlerRootView, NativeViewGestureHandler } from "react-native-gesture-handler"
 import MyButton from "../compontents/MyButton"
@@ -7,12 +7,14 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { createProject } from "../api/projectAPI"
+import MyError from "../compontents/MyError"
+import { BuildMonitor } from "../App"
 
 function reducer(state, action) {
     switch (action.type) {
-      case 'projectName':
+    case 'projectName':
         return {...state, projectName: action.payload};
-      case 'projectCode':
+    case 'projectCode':
         return {...state, projectCode: action.payload};
     case 'projectDateStart':
         return {...state, projectDateStart: action.payload};
@@ -50,43 +52,54 @@ const initialState = {
 
 const CreateProject = ({ navigation }) => {
     const [image, setImage] = useState()
+    const [trigger, setTrigger] = useState(false)
     const [projectInfo, dispatch] = useReducer(reducer, initialState)
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-      console.log(image)
-    }, [image])
+    const { setProjects, projects } = useContext(BuildMonitor)
     
-
     useEffect(() => {
         const saveProject = () => {
-            // console.log(image)
+            if (projectInfo.projectName === '') {
+                setTrigger(true)
+                setTimeout(() => {
+                    setTrigger(false)
+                }, 100);
+                return 
+            }
+            setLoading(true)
             const project = new FormData()
+            if (image) {
+                var imageFile = {
+                    uri: image.uri,
+                    type: 'image/jpeg',
+                    name: 'photo.jpg'
+                }
+                project.append('image', imageFile)
+            }
             project.append('projectName', projectInfo.projectName)
-            // project.append('projectCode', projectInfo.projectCode)
-            // project.append('projectDateStart', projectInfo.projectDateStart)
-            // project.append('projectDateEnd', projectInfo.projectDateEnd)
-            // project.append('projectDescription', projectInfo.projectDescription)
-            // project.append('projectWebPage', projectInfo.projectWebPage)
-            // project.append('projectStreet', projectInfo.projectStreet)
-            // project.append('projectPostalCode', projectInfo.projectPostalCode)
-            // project.append('projectCountry', projectInfo.projectCountry)
-            // project.append('projectCity', projectInfo.projectCity)
-            // project.append('image', image)
-            createProject(project).then((res) => console.log(res)).catch(e => console.log(e.message))
+            project.append('projectCode', projectInfo.projectCode)
+            project.append('projectDateStart', `'${projectInfo.projectDateStart}'`)
+            project.append('projectDateEnd', `'${projectInfo.projectDateEnd}'`)
+            project.append('projectDescription', projectInfo.projectDescription)
+            project.append('projectWebPage', projectInfo.projectWebPage)
+            project.append('projectStreet', projectInfo.projectStreet)
+            project.append('projectPostalCode', projectInfo.projectPostalCode)
+            project.append('projectCountry', projectInfo.projectCountry)
+            project.append('projectCity', projectInfo.projectCity)
+            createProject(project).then((res) => {
+                console.log(res)
+                // setProjects(projects),
+                navigation.goBack()
+            }).catch(e => console.log(e.message)).finally(() => setLoading(false))
         }
       navigation.setOptions({
         headerRight: () => (
-            <GestureHandlerRootView>
-                <BaseButton title={'Сохранить'} onPress={saveProject}>
-                    <View accessible accessibilityRole="button">
-                        <Text style={{padding:10, fontWeight:'bold'}}>Сохранить</Text>
-                    </View>
-                </BaseButton>
-            </GestureHandlerRootView>
+            <MyButton enabled={!loading} title={'Сохранить'} onPress={saveProject} />
         )
       })
     
-    }, [navigation, image])
+    }, [navigation, image, projectInfo, trigger, loading])
 
     const chooseDate = (dateName) => {
         DateTimePickerAndroid.open({
@@ -95,13 +108,10 @@ const CreateProject = ({ navigation }) => {
             value: new Date(),
         })
     }
-
-    useEffect(() => {
-      console.log(projectInfo)
-    }, [projectInfo])
     
     return (
         <KeyboardAvoidingView style={styles.container}>
+            <MyError errorMsg={'Обязательные поля не заполнены!'} trigger={trigger} />
             <ScrollView style={{width:'100%'}}>
                 <MyInput type='image' image={image} setImage={setImage} />
                 <MyInput type='input' returnKeyType="next" required onChangeText={(txt) => dispatch({type: 'projectName', payload: txt})} placeholder='Введите название проекта' title='Название проекта' />

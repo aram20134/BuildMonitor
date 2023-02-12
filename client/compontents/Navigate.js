@@ -17,7 +17,7 @@ const Drawer = createDrawerNavigator()
 
 const Root = () => [
     <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName='BuildMonitor'>
-        <Drawer.Screen name='BuildMonitor' component={Home} options={{headerShadowVisible: false, headerStyle: {backgroundColor: '#42b3ff'}}} />
+        <Drawer.Screen  name='BuildMonitor' component={Home} options={{headerShadowVisible: false, headerStyle: {backgroundColor: '#005D99'}, headerTintColor:'white'}} />
     </Drawer.Navigator>
 ]
 
@@ -53,7 +53,7 @@ const Navigate = () => {
         </NavigationContainer>
     ) : (
         <NavigationContainer>
-            <Stack.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName='BuildMonitor' >
+            <Stack.Navigator drawerContent={props => <CustomDrawer {...props} />} initialRouteName='BuildMonitor' screenOptions={{headerTintColor:'white'}} >
                 <Stack.Screen name='Root' component={Root} options={{headerShown: false}} />
                 {PrivateRoutes.map((route) => <Stack.Screen key={route.name} name={route.name} component={route.component} options={route.options} />)}
             </Stack.Navigator>
