@@ -61,6 +61,21 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
                     </View>
                 </GestureHandlerRootView>
             )
+        case 'form':
+            return (
+                <GestureHandlerRootView>
+                    <View style={styles.inputContainer}>
+                        <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
+                        {/* <TextInput value={value} placeholder={placeholder} onChangeText={onChangeText} /> */}
+                            <BorderlessButton onPress={onPress}>
+                                <View accessible accessibilityRole="button" style={{flexDirection:'row', alignItems:'center'}}>
+                                    <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/calendar.png')} />
+                                    <Text>{value ? value : 'Выбрать'}</Text>
+                                </View>
+                            </BorderlessButton>
+                    </View>
+                </GestureHandlerRootView>
+            )
         default:
             break;
     }
