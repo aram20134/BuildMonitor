@@ -113,17 +113,17 @@ const CreateProject = ({ navigation }) => {
         <KeyboardAvoidingView style={styles.container}>
             <MyError errorMsg={'Обязательные поля не заполнены!'} trigger={trigger} />
             <ScrollView style={{width:'100%'}}>
-                <MyInput type='image' image={image} setImage={setImage} />
-                <MyInput type='input' returnKeyType="next" required onChangeText={(txt) => dispatch({type: 'projectName', payload: txt})} placeholder='Введите название проекта' title='Название проекта' />
-                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCode', payload: txt})} placeholder='Введите Код проекта' title='Код проекта' />
+                <MyInput title={'Логотип проекта'} type='image' image={image} setImage={setImage} />
+                <MyInput type='text' returnKeyType="next" required onChangeText={(txt) => dispatch({type: 'projectName', payload: txt})} placeholder='Введите название проекта' title='Название проекта' />
+                <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCode', payload: txt})} placeholder='Введите Код проекта' title='Код проекта' />
                 <MyInput type='date' value={projectInfo.projectDateStart && format(projectInfo.projectDateStart, 'dd.MM.yyyy', {locale: ru})} onPress={() => chooseDate('projectDateStart')} placeholder='Установите дату' title='Начало проекта' />
                 <MyInput type='date' value={projectInfo.projectDateEnd && format(projectInfo.projectDateEnd, 'dd.MM.yyyy', {locale: ru})} onPress={() => chooseDate('projectDateEnd')} placeholder='Установите дату' title='Завершение проекта' />
-                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectDescription', payload: txt})} placeholder='Введите описание' title='Описание' />
-                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectWebPage', payload: txt})} placeholder='Введите веб-страницу проекта' title='Веб-страница проекта' />
-                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectStreet', payload: txt})} placeholder='Введите улицу' title='Улица' />
-                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectPostalCode', payload: txt})} placeholder='Введите почтовый индекс' title='Почтовый индекс' />
-                <MyInput type='input' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCountry', payload: txt})} placeholder='Введите страну' title='Страна' />
-                <MyInput type='input' onChangeText={(txt) => dispatch({type: 'projectCity', payload: txt})} placeholder='Введите Город' title='Город' />
+                <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectDescription', payload: txt})} placeholder='Введите описание' title='Описание' />
+                <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectWebPage', payload: txt})} placeholder='Введите веб-страницу проекта' title='Веб-страница проекта' />
+                <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectStreet', payload: txt})} placeholder='Введите улицу' title='Улица' />
+                <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectPostalCode', payload: txt})} placeholder='Введите почтовый индекс' title='Почтовый индекс' />
+                <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCountry', payload: txt})} placeholder='Введите страну' title='Страна' />
+                <MyInput type='text' onChangeText={(txt) => dispatch({type: 'projectCity', payload: txt})} placeholder='Введите Город' title='Город' />
                 {/* <Button title="pick img" onPress={test} /> */}
             </ScrollView>
         </KeyboardAvoidingView>

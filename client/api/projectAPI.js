@@ -23,15 +23,21 @@ export const getLayers = async (projectId) => {
 }
 
 export const getTasks = async (layerId) => {
-    const {data} = await host.get('/api/project/getTasks', {layerId})
+    const {data} = await host.get('/api/project/getTasks?layerId=' + layerId)
     return data
 }
 
-export const addTask = async () => {
-    // API .... formId, layerId, data
+export const addTask = async (allValues, formId, layerId, author, taskId) => {
+    const {data} = await host.post('/api/project/addTask', {allValues, formId, layerId, author, taskId})
+    return data
 }
 
 export const getForms = async () => {
     const {data} = await host.get('/api/project/getForms')
+    return data
+}
+
+export const getForm = async (formId) => {
+    const {data} = await host.get('/api/project/getForm?formId=' + formId)
     return data
 }

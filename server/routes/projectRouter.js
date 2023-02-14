@@ -11,6 +11,7 @@ router.get('/getLayers', projectController.getLayers)
 router.post('/addTask', projectController.addTask)
 router.get('/getTasks', projectController.getTasks)
 router.get('/getForms', projectController.getForms)
+router.get('/getForm', projectController.getForm)
 
 module.exports = router
 

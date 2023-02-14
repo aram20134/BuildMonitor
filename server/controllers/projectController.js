@@ -36,7 +36,7 @@ class ProjectController {
     }
     async getProjects(req, res, next) {
         try {
-            const projects = await Project.findAll({include:[{model: Layer, include: [{model: Task}]}]})
+            const projects = await Project.findAll({include:[{model: Layer, include: [{model: Task, include: [{model: TaskInfo}]}]}]})
             res.json(projects)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
@@ -62,8 +62,17 @@ class ProjectController {
     }
     async getForms(req, res, next) {
         try {
-            const forms = await Form.findAll({include:[{model: FormInfo}]})
+            const forms = await Form.findAll({include:[{model: FormInfo}], order:[[FormInfo, 'createdAt', 'ASC']]})
             res.json(forms)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async getForm(req, res, next) {
+        try {
+            const {formId} = req.query
+            const form = await Form.findOne({where: {id: formId}, include: [{model: FormInfo}], order:[[FormInfo, 'createdAt', 'ASC']]})
+            res.json(form)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }
@@ -88,18 +97,37 @@ class ProjectController {
     }
     async addTask (req, res, next) {
         try {
-            const {formId, layerId, data} = req.body
-            const task = await Task.create({formId, layerId})
-            data.map((info) => TaskInfo.create({taskId: task.id, name: info.name, value: info.value, type: info.type}))
-            res.json({status:'200'})
+            const {formId, layerId, allValues, author, taskId} = req.body
+            // console.log(formId, layerId, allValues, author)
+            console.log(Array.isArray(allValues))
+            if (!formId || !layerId || !allValues) {
+                return next(ApiError.badRequest('Получены не все значения'))
+            }
+            if (!Array.isArray(allValues)) {
+                var result = Object.keys(allValues).reduce((acc, cur) => {
+                    acc.push({[cur]: allValues[cur]})
+                    return acc
+                }, []);
+                const task = await Task.create({formId, layerId, name: allValues['Название'], author})
+                // console.log(task.id)
+                result.map((inf) => TaskInfo.create({taskId: task.id, name: Object.keys(inf)[0], value: Object.values(inf)[0]}))
+                res.json({status:'200'})
+            } else {
+                // console.log(allValues.filter((inf) => inf.name === 'Название')[0].value)
+                const taskName = allValues.filter((inf) => inf.name === 'Название')[0].value
+                const task = await Task.update({name: taskName}, {where: {id: taskId}})
+                allValues.map((inf) => TaskInfo.update({value: inf.value}, {where: {taskId, name: inf.name}}))
+                res.json({status:'201'})
+            }
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }
     }
     async getTasks(req, res, next) {
         try {
-            const {layerId} = req.body
-            const tasks = await Task.findAll({where:{layerId}, include: [{model: TaskInfo}]})
+            const {layerId} = req.query
+            const tasks = await Task.findAll({where:{layerId}, include: [{model: TaskInfo}], order:[['createdAt', 'DESC']]})
+            console.log(layerId)
             res.json(tasks)
         } catch (e) {
             return next(ApiError.badRequest(e.message))

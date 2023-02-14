@@ -1,18 +1,30 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, Image, StyleSheet, Text, View } from "react-native";
+import { Button, Image, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BuildMonitor } from "../App";
-import { BaseButton, BorderlessButton, GestureHandlerRootView } from "react-native-gesture-handler";
+import { BaseButton, BorderlessButton, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { getTasks } from "../api/projectAPI";
   
 const Tab = createMaterialTopTabNavigator()
 
-
 const Tasks = () => {
-    const { chosedLayer } = useContext(BuildMonitor)
+    const { chosedLayer, setChosedLayer } = useContext(BuildMonitor)
     const navigation = useNavigation()
+    const [refreshing, setRefreshing] = useState(false)
     
+    const onRefresh = () => {
+      getTasks(chosedLayer.id).then((res) => setChosedLayer({...chosedLayer, tasks: res})).finally(() => setRefreshing(false))
+    }
+      
+    useEffect(() => {
+      console.log(chosedLayer)
+    }, [])
+  
+  
     const AddTskBtn = () => {
       return (
         <GestureHandlerRootView style={{display:'flex', position:'absolute', right:0, bottom:0, margin:20}}>
@@ -23,6 +35,24 @@ const Tasks = () => {
                   </View>
               </View>
           </BorderlessButton>
+        </GestureHandlerRootView>
+      )
+    }
+    const Task = ({task}) => {
+      return (
+        <GestureHandlerRootView style={{width:'95%', marginTop:10}}>
+          <BaseButton style={{backgroundColor:'white', borderRadius:5, ...styles.shadows}} onPress={() => navigation.navigate('Задача', {task})}>
+            <View accessible accessibilityRole="button" style={styles.taskContainer}>
+              <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
+                <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+              </View>
+              <View style={{marginTop:5}}>
+                <Text>{task.name}</Text>
+              </View>
+              <Text style={{color:'#005D99', borderWidth:1, borderColor:'#005D99', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, marginTop:5, }}>{task.id}</Text>
+            </View>
+          </BaseButton>
         </GestureHandlerRootView>
       )
     }
@@ -40,8 +70,11 @@ const Tasks = () => {
         </View>
       ) : (
         <View style={styles.container}>
-          <StatusBar style="auto" />
-          <Text>Задачи....</Text>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={{width:'100%', height:'100%', flex:1}}>
+              <View style={{width:'100%', alignItems:'center', paddingBottom:70}}>
+                {chosedLayer.tasks.map((task) => <Task key={task.id} task={task} />)}
+              </View>
+            </ScrollView>
           <AddTskBtn />
         </View>
       )
@@ -93,10 +126,28 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: "center",
+      height:'100%'
     },
     container2: {
       flex: 1,
       alignItems: "center",
       justifyContent:'center',
     },
+    taskContainer: {
+      flexDirection:'column',
+      // width:'95%', 
+      // backgroundColor:'white', 
+      // borderRadius:5,
+      padding:5
+    },
+    shadows: {
+      shadowColor: "#000",
+      shadowOffset: {
+          width: 0,
+          height: 2,
+      },
+      shadowOpacity: 0.23,
+      shadowRadius: 2.62,
+      elevation: 14,
+    }
 });

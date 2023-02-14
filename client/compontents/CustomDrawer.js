@@ -36,7 +36,7 @@ const CustomDrawer = ({ navigation }) => {
 
     useEffect(() => {
         getProjects().then((res) => setProjects(res)).finally(() => setLoading(false))
-    }, [])
+    }, [chosedProject])
     
 
     const Item = ({item, isProject = true}) => {

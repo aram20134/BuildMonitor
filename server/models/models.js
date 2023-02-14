@@ -29,12 +29,14 @@ const Layer = sequelize.define('layers', {
 
 const Task = sequelize.define('tasks', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, allowNull: false}
+  name: { type: DataTypes.STRING, allowNull: false },
+  image: { type: DataTypes.STRING },
+  author: { type: DataTypes.STRING, allowNull: false }
 })
 
 const TaskInfo = sequelize.define('taskInfos', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  type: { type: DataTypes.STRING },
+  // type: { type: DataTypes.STRING },
   name: { type: DataTypes.STRING, allowNull: false },
   value: { type: DataTypes.STRING }
 })

@@ -1,8 +1,10 @@
 import { Image, StyleSheet, Text, View } from "react-native"
 import { BaseButton, BorderlessButton, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import * as ImagePicker from 'expo-image-picker'
+import Checkbox from "expo-checkbox"
+import { useState } from "react"
 
-const MyInput = ({title, required = false, placeholder, onChangeText, value, type, onPress, image, setImage, returnKeyType}) => {
+const MyInput = ({title, required = false, placeholder, onChangeText, value, type, onPress, image, setImage, returnKeyType, enabled = true, onCheckboxChange, defaultValue, dateValue}) => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -19,23 +21,24 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
     }
 
     switch (type) {
-        case 'input':
+        case 'text':
             return (
                 <View style={styles.inputContainer}>
                     <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
-                    <TextInput returnKeyType={returnKeyType} value={value} placeholder={placeholder} onChangeText={onChangeText} />
+                    <TextInput defaultValue={defaultValue} returnKeyType={returnKeyType} value={value} placeholder={placeholder} onChangeText={onChangeText} />
                 </View>
             )
         case 'date':
+            console.log(dateValue)
             return (
-                <GestureHandlerRootView>
+                <GestureHandlerRootView style={{width:'100%'}}>
                     <View style={styles.inputContainer}>
                         <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
                         {/* <TextInput value={value} placeholder={placeholder} onChangeText={onChangeText} /> */}
                             <BorderlessButton onPress={onPress}>
                                 <View accessible accessibilityRole="button" style={{flexDirection:'row', alignItems:'center'}}>
                                     <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/calendar.png')} />
-                                    <Text>{value ? value : 'Выбрать'}</Text>
+                                    <Text>{dateValue ? dateValue : 'Выбрать'}</Text>
                                 </View>
                             </BorderlessButton>
                     </View>
@@ -45,8 +48,8 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
             return (
                 <GestureHandlerRootView>
                     <View style={{...styles.inputContainer}}>
-                        <Text>Логотип проекта</Text>
-                        <BaseButton onPress={pickImage}>
+                        <Text>{title}</Text>
+                        <BaseButton enabled={enabled} onPress={pickImage}>
                             <View accessible accessibilityRole="button" style={{...styles.imgPick, borderWidth: image ? 0 : 2}}>
                                 {image ? (
                                     <Image source={{uri: image.uri, width: image.width, height: image.height}} style={{flex: 1}} resizeMode='contain' resizeMethod='scale' />
@@ -61,23 +64,25 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
                     </View>
                 </GestureHandlerRootView>
             )
-        case 'form':
+        case 'checkbox':
+            const [checked, setChecked] = useState(defaultValue === 'true')
             return (
-                <GestureHandlerRootView>
-                    <View style={styles.inputContainer}>
-                        <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
-                        {/* <TextInput value={value} placeholder={placeholder} onChangeText={onChangeText} /> */}
-                            <BorderlessButton onPress={onPress}>
-                                <View accessible accessibilityRole="button" style={{flexDirection:'row', alignItems:'center'}}>
-                                    <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/calendar.png')} />
-                                    <Text>{value ? value : 'Выбрать'}</Text>
-                                </View>
-                            </BorderlessButton>
+                <GestureHandlerRootView style={{width:'95%'}}>
+                    <View style={{...styles.inputContainer, width:'100%'}}>
+                        <BorderlessButton style={{width:'100%'}} onPress={() => {setChecked(!checked), onCheckboxChange(!checked)}}>
+                            <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
+                            <View accessible accessibilityRole="button" style={{flexDirection:'row', justifyContent:'space-between', paddingTop:15, paddingRight:10, paddingBottom:5}}>
+                                <Text>{checked ? 'Да' : 'Нет'}</Text>
+                                <Checkbox value={checked} style={{}} /> 
+                            </View>
+                        </BorderlessButton>
                     </View>
                 </GestureHandlerRootView>
             )
         default:
-            break;
+            return (
+                <Text>Молодец (нет)</Text>
+            )
     }
 }
 
