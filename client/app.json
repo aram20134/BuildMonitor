@@ -24,10 +24,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.dasigty.BuildMonitor"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e585c4c8-8f03-4fd5-9de6-b4f63468ce23"
+      }
     }
   }
 }

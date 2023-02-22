@@ -8,6 +8,8 @@ import MyButton from "../compontents/MyButton";
 import MyInput from "../compontents/MyInput";
 import { BuildMonitor } from "../App"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 
 const CreateTask = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
@@ -25,43 +27,54 @@ const CreateTask = ({ navigation }) => {
   }, [])
 
   useEffect(() => {
+    const createTask = new FormData()
+    if (image) {
+      var imageFile = {
+          uri: image.uri,
+          type: 'image/jpeg',
+          name: 'photo.jpg'
+      }
+      createTask.append('image', imageFile)
+    }
+    // allValues, formId, layerId, author, taskId
+    console.log(allValues)
+    console.log(imageFile)
+    createTask.append('allValues', JSON.stringify(allValues))
+    createTask.append('formId', selectedForm?.id)
+    createTask.append('layerId', chosedLayer.id)
+    createTask.append('author', user.name)
+  
     navigation.setOptions({
       headerRight: () => (
-          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(allValues, selectedForm.id, chosedLayer.id, user.name).then(() => navigation.goBack())} />
+          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then(() => navigation.goBack()).catch((e) => console.log(e))} />
       ),
     })
-  }, [loading, allValues])
+  }, [loading, allValues, selectedForm])
 
   const chooseDate = (info) => {
-    console.log(info)
     DateTimePickerAndroid.open({
         onChange: (event, selectetDate) => setAllValues(prev => ({...prev, [info.name]: selectetDate})),
         mode: 'date',
         value: new Date(),
     })
-}
-  
+  }
+  const chooseTime = (info) => {
+    DateTimePickerAndroid.open({
+        onChange: (event, selectetDate) => setAllValues(prev => ({...prev, [info.name]: selectetDate})),
+        mode: 'time',
+        value: new Date(),
+        is24Hour: true
+    })
+  }
 
   useEffect(() => {
     setImage()
     setAllValues({})
     if (selectedForm) {
-      // selectedForm.formInfos.map((inf) => console.log(inf))
       selectedForm.formInfos.map((inf) => setAllValues(prev => ({...prev, [inf.name]: null})))
     }
   }, [selectedForm])
-
-  useEffect(() => {
-    let timer = setTimeout(() => {
-      console.log(allValues['Комментарии'])
-    }, 500);
     
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [allValues])
-    
-
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -73,7 +86,7 @@ const CreateTask = ({ navigation }) => {
           <MyInput enabled={!open} setImage={setImage} image={image} title={'Фотография'} type={'image'} />
         </View>
         <MyInput onChangeText={(text) => setAllValues({...allValues, ['Название']: text})} placeholder={'Добавить текст'} required type='text' title={'Название'} />
-        {selectedForm?.formInfos.map((info) => <MyInput dateValue={allValues[info.name]} onPress={() => chooseDate(info)} defaultValue={allValues[info.name]} onCheckboxChange={(val) => setAllValues({...allValues, [info.name]: val})} onChangeText={(text) => setAllValues({...allValues, [info.name]: text})} title={info.name} type={info.type} placeholder={'Добавить текст'} />)}
+        {selectedForm?.formInfos.map((info) => <MyInput timeValue={allValues[info.name] && format(allValues[info.name], 'HH:mm', {locale: ru})} dateValue={allValues[info.name] && format(allValues[info.name], 'dd.MM.yyyy', {locale: ru})} chooseTime={() => chooseTime(info)} chooseDate={() => chooseDate(info)} defaultValue={allValues[info.name]} onCheckboxChange={(val) => setAllValues({...allValues, [info.name]: val})} onChangeText={(text) => setAllValues({...allValues, [info.name]: text})} title={info.name} type={info.type} placeholder={'Добавить текст'} />)}
       </View>
     </ScrollView>
   );

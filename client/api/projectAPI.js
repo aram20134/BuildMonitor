@@ -3,7 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { authHost, host } from '.';
 
 export const createProject = async (project) => {
-    const {data} = await host.post('api/project/createProject', project, {headers: {"Content-Type": 'multipart/form-data'}}).catch(e => console.log(JSON.stringify(e)))
+    const {data} = await host.post('api/project/createProject', project, {headers: {"Content-Type": 'multipart/form-data'}})
     return data
 }
 
@@ -12,8 +12,8 @@ export const getProjects = async () => {
     return data
 }
 
-export const addLayer = async (name, project) => {
-    const {data} = await host.post('/api/project/addLayer', {name, project})
+export const addLayer = async (name, projectId) => {
+    const {data} = await host.post('/api/project/addLayer', {name, projectId})
     return data
 }
 
@@ -27,8 +27,8 @@ export const getTasks = async (layerId) => {
     return data
 }
 
-export const addTask = async (allValues, formId, layerId, author, taskId) => {
-    const {data} = await host.post('/api/project/addTask', {allValues, formId, layerId, author, taskId})
+export const addTask = async (createTask) => {
+    const {data} = await host.post('/api/project/addTask', createTask, {headers: {"Content-Type": 'multipart/form-data'}})
     return data
 }
 
@@ -39,5 +39,10 @@ export const getForms = async () => {
 
 export const getForm = async (formId) => {
     const {data} = await host.get('/api/project/getForm?formId=' + formId)
+    return data
+}
+
+export const changeLayersPos = async (layers) => {
+    const {data} = await host.post('/api/project/changeLayersPos', layers)
     return data
 }

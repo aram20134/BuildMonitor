@@ -80,8 +80,12 @@ class ProjectController {
     async addLayer(req, res, next) {
         try {
             const {name, projectId} = req.body
-            const layer = await Layer.create({name, projectId})
-            res.json({status:'200'})
+            if (!name || !projectId) {
+                return next(ApiError.badRequest('Получены не все значения'))
+            }
+            const createLayer = await Layer.create({name, projectId})
+            const layer = await Layer.findOne({where:{id: createLayer.id}, include: [{model: Task, include: [{model: TaskInfo}]}]})
+            res.json(layer)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }
@@ -97,9 +101,19 @@ class ProjectController {
     }
     async addTask (req, res, next) {
         try {
-            const {formId, layerId, allValues, author, taskId} = req.body
-            // console.log(formId, layerId, allValues, author)
-            console.log(Array.isArray(allValues))
+            const createTask = req.body
+            const image = req.files
+            const allValues = JSON.parse(createTask.allValues)
+            const formId = createTask.formId
+            const layerId = createTask.layerId
+            const author = createTask.author
+            const taskId = createTask?.taskId
+            let fileName = null
+
+            if (image) {
+                fileName = uuid.v4() + '.' + image.image.name.split('.').pop()
+            }
+            console.log(fileName)
             if (!formId || !layerId || !allValues) {
                 return next(ApiError.badRequest('Получены не все значения'))
             }
@@ -108,12 +122,11 @@ class ProjectController {
                     acc.push({[cur]: allValues[cur]})
                     return acc
                 }, []);
-                const task = await Task.create({formId, layerId, name: allValues['Название'], author})
-                // console.log(task.id)
+                const task = await Task.create({formId, layerId, name: allValues['Название'], author, image: fileName})
+                image.image.mv(path.resolve(__dirname, '..', 'static/taskImages', fileName))
                 result.map((inf) => TaskInfo.create({taskId: task.id, name: Object.keys(inf)[0], value: Object.values(inf)[0]}))
                 res.json({status:'200'})
             } else {
-                // console.log(allValues.filter((inf) => inf.name === 'Название')[0].value)
                 const taskName = allValues.filter((inf) => inf.name === 'Название')[0].value
                 const task = await Task.update({name: taskName}, {where: {id: taskId}})
                 allValues.map((inf) => TaskInfo.update({value: inf.value}, {where: {taskId, name: inf.name}}))
@@ -138,6 +151,16 @@ class ProjectController {
             const {taskId, data} = req.body
             // const taskInfo = await TaskInfo.create({taskId, name, value, type})
             // res.json({status: '200'})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async changeLayersPos(req, res, next) {
+        try {
+            const layers = req.body
+            console.log(layers)
+            layers.map((layer) => Layer.update({pos: layer.pos}, {where:{id: layer.id}}))
+            res.json({status:'200'})
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }

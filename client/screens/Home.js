@@ -1,10 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { Button, Image, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { BuildMonitor } from "../App";
 import { BaseButton, BorderlessButton, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { getTasks } from "../api/projectAPI";
@@ -23,6 +23,13 @@ const Tasks = () => {
     useEffect(() => {
       console.log(chosedLayer)
     }, [])
+  
+    useFocusEffect(useCallback(() => {
+      if (chosedLayer) {
+        console.log('foc')
+        getTasks(chosedLayer.id).then((res) => setChosedLayer({...chosedLayer, tasks: res})).finally(() => setRefreshing(false))
+      }
+    }, []))
   
   
     const AddTskBtn = () => {
@@ -64,8 +71,11 @@ const Tasks = () => {
     ) : (
       !chosedLayer.tasks.length ? (
         <View style={styles.container}>
-          <StatusBar style="auto" />
-          <Text>Нет доступных задач</Text>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={{width:'100%', height:'100%', flex:1}}>
+              <View style={{width:'100%', alignItems:'center', paddingBottom:70}}>
+                <Text style={{marginTop:15}}>Нет доступных задач</Text>
+              </View>
+            </ScrollView>
           <AddTskBtn />
         </View>
       ) : (

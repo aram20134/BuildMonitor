@@ -1,9 +1,10 @@
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useContext, useEffect, useState } from "react"
-import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native"
+import { ActivityIndicator, Button, Image, StyleSheet, Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler";
 import { addTask, getForm } from "../api/projectAPI";
+import { REACT_NATIVE_API_URL } from "../api/variables";
 import { BuildMonitor } from "../App";
 import MyInput from "../compontents/MyInput";
 
@@ -32,9 +33,15 @@ const Task = ({ route, navigation }) => {
 
     useEffect(() => {
       let timer = setTimeout(() => {
+        const createTask = new FormData()
         const author = user.name
         const taskId = task.id
-        addTask(allValues, task.formId, task.layerId, author, taskId).then((res) => console.log(res))
+        createTask.append('allValues', JSON.stringify(allValues))
+        createTask.append('formId', task.formId)
+        createTask.append('layerId', task.layerId)
+        createTask.append('author', author)
+        createTask.append('taskId', taskId)
+        addTask(createTask).then((res) => console.log(res))
       }, 300);
       return () => {
         clearTimeout(timer)
@@ -53,8 +60,9 @@ const Task = ({ route, navigation }) => {
           <View style={{marginTop:15, marginBottom:10}}>
             <Text style={{textTransform:'uppercase', fontSize:12}}>{loading ? 'Форма: Загрузка...' : 'Форма: ' + form.name}</Text>
           </View>
-          <View style={{width:'100%'}}>
-            <MyInput title={'Фотография'} type='image' required />
+          <View style={{width:'100%', alignItems:'center', padding:10}}>
+            {/* <MyInput title={'Фотография'} type='image' required /> */}
+            {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`}} style={{width:'100%', height:250}} resizeMode='contain' />}
           </View>
           <MyInput title={'Название'} defaultValue={task.name} type='text' required onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === 'Название' ? {...val, value: text} : val))} />
           {!loading ? form.formInfos.map((form) => {

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext, useState } from "react";
-import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Button, Image, StatusBar, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { checkLogin, log } from "../api/userAPI";
@@ -59,7 +59,7 @@ const Login = ({ navigation }) => {
           </View>
         </View>
         {nextStep && <TextInput cursorColor={'black'} autoFocus={true} blurOnSubmit={false} onSubmitEditing={LogIn} secureTextEntry={true} style={{...styles.TextInput, marginBottom: 15}} onChangeText={setPassword} value={password} placeholder='Пароль' />}
-        <MyButton title='Продолжить' onPress={!nextStep ? checkName : LogIn} disabled={loading}  />
+        <Button title='Продолжить' onPress={!nextStep ? checkName : LogIn} disabled={loading}  />
       </View>
       <MyError errorMsg={'Неверное имя пользователья (e-mail) или пароль.'} trigger={triggerError} />
     </SafeAreaView>

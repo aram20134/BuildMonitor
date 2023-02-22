@@ -24,7 +24,9 @@ const Project = sequelize.define('project', {
 
 const Layer = sequelize.define('layers', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, allowNull: false }
+  name: { type: DataTypes.STRING, allowNull: false },
+  pos: { type: DataTypes.INTEGER, defaultValue: 0 },
+  plan: { type: DataTypes.STRING }
 })
 
 const Task = sequelize.define('tasks', {

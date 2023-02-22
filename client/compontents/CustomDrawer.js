@@ -22,6 +22,7 @@ const CustomDrawer = ({ navigation }) => {
     }
 
     useFocusEffect(useCallback(() => {
+        setLoading(true)
         getProjects().then((res) => setProjects(res)).finally(() => setLoading(false))
     }, []))
 
@@ -37,7 +38,6 @@ const CustomDrawer = ({ navigation }) => {
     useEffect(() => {
         getProjects().then((res) => setProjects(res)).finally(() => setLoading(false))
     }, [chosedProject])
-    
 
     const Item = ({item, isProject = true}) => {
         var count
@@ -91,10 +91,13 @@ const CustomDrawer = ({ navigation }) => {
                             }
                         </View>
                         <View style={{width:'90%', borderWidth:2, borderColor:'#42b3ff', alignSelf:'center', margin:10, borderRadius:5}}>
-                            <MyButton onPress={() => navigation.navigate('Информация проекта')} title={'Показать сведения о проекте'} custom={{text: {color:'#42b3ff'}, button: {justifyContent:'center', alignItems:'center', paddingLeft:'10%', paddingRight:'10%', paddingTop:7, paddingBottom:7}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
+                            <MyButton onPress={() => navigation.navigate('Информация проекта')} title={'Показать сведения о проекте'} custom={{text: {color:'#42b3ff'}, button: {justifyContent:'center', alignItems:'center', paddingLeft:'5%', paddingRight:'5%', paddingTop:7, paddingBottom:7}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
                         </View>
                         <View style={styles.listContainer}>
-                            {chosedProject.layers.filter((pr) => pr.name.toLowerCase().includes(search.toLowerCase())).map((layer) => <Item key={layer.name} isProject={false} item={layer} />)}
+                            {chosedProject.layers.filter((pr) => pr.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos).map((layer) => <Item key={layer.name} isProject={false} item={layer} />)}
+                        </View>
+                        <View style={{borderWidth:2, borderColor:'#42b3ff', alignSelf:'center', margin:10, borderRadius:5}}>
+                            <MyButton onPress={() => navigation.navigate('Manage Layers')} title={'Управление слоями'} custom={{text: {color:'#42b3ff', paddingLeft:20, paddingRight:20}, button: {justifyContent:'center', alignItems:'center', paddingLeft:'10%', paddingRight:'10%', paddingTop:7, paddingBottom:7}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
                         </View>
                     </>
                 ) : (

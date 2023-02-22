@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker'
 import Checkbox from "expo-checkbox"
 import { useState } from "react"
 
-const MyInput = ({title, required = false, placeholder, onChangeText, value, type, onPress, image, setImage, returnKeyType, enabled = true, onCheckboxChange, defaultValue, dateValue}) => {
+const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, chooseTime, onChangeText, value, type, onPress, image, setImage, returnKeyType, enabled = true, onCheckboxChange, defaultValue, dateValue}) => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,18 +29,32 @@ const MyInput = ({title, required = false, placeholder, onChangeText, value, typ
                 </View>
             )
         case 'date':
-            console.log(dateValue)
             return (
                 <GestureHandlerRootView style={{width:'100%'}}>
                     <View style={styles.inputContainer}>
                         <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
                         {/* <TextInput value={value} placeholder={placeholder} onChangeText={onChangeText} /> */}
-                            <BorderlessButton onPress={onPress}>
-                                <View accessible accessibilityRole="button" style={{flexDirection:'row', alignItems:'center'}}>
-                                    <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/calendar.png')} />
-                                    <Text>{dateValue ? dateValue : 'Выбрать'}</Text>
-                                </View>
-                            </BorderlessButton>
+                        <BorderlessButton onPress={chooseDate}>
+                            <View accessible accessibilityRole="button" style={{flexDirection:'row', alignItems:'center'}}>
+                                <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='resize' source={require('../assets/calendar.png')} />
+                                <Text>{dateValue ? dateValue : 'Выбрать'}</Text>
+                            </View>
+                        </BorderlessButton>
+                    </View>
+                </GestureHandlerRootView>
+            )
+        case 'time':
+            return (
+                <GestureHandlerRootView style={{width:'100%'}}>
+                    <View style={styles.inputContainer}>
+                        <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
+                        {/* <TextInput value={value} placeholder={placeholder} onChangeText={onChangeText} /> */}
+                        <BorderlessButton onPress={chooseTime}>
+                            <View accessible accessibilityRole="button" style={{flexDirection:'row', alignItems:'center'}}>
+                                <Image style={{width:25, height:35, marginRight: 10}} resizeMode='contain' resizeMethod='auto' source={require('../assets/clock.png')} />
+                                <Text>{timeValue ? timeValue : 'Выбрать'}</Text>
+                            </View>
+                        </BorderlessButton>
                     </View>
                 </GestureHandlerRootView>
             )

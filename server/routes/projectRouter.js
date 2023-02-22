@@ -12,6 +12,7 @@ router.post('/addTask', projectController.addTask)
 router.get('/getTasks', projectController.getTasks)
 router.get('/getForms', projectController.getForms)
 router.get('/getForm', projectController.getForm)
+router.post('/changeLayersPos', projectController.changeLayersPos)
 
 module.exports = router
 
