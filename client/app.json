@@ -1,10 +1,11 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "BuildMonitor",
     "slug": "BuildMonitor",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/logo3.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/logo.png",
@@ -22,7 +23,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/logo3.png",
+        "resizeMode": "contain",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.dasigty.BuildMonitor"

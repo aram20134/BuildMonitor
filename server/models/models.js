@@ -54,6 +54,12 @@ const FormInfo = sequelize.define('formInfos', {
   name: { type: DataTypes.STRING, allowNull: false },
 })
 
+const ListInfo = sequelize.define('listInfos', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING },
+  ico: { type: DataTypes.STRING }
+})
+
 Project.hasMany(Layer)
 Layer.belongsTo(Project)
 
@@ -69,6 +75,9 @@ TaskInfo.belongsTo(Task)
 Form.hasMany(FormInfo)
 FormInfo.belongsTo(Form)
 
+FormInfo.hasMany(ListInfo)
+ListInfo.belongsTo(FormInfo)
+
 module.exports = {
-  User, Project, Layer, Form, Task, FormInfo, TaskInfo
+  User, Project, Layer, Form, Task, FormInfo, TaskInfo, ListInfo
 };

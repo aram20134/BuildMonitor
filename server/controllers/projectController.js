@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid')
 const path = require('path')
-const { User, Project, Form, FormInfo, Layer, Task, TaskInfo } = require('../models/models');
+const { User, Project, Form, FormInfo, Layer, Task, TaskInfo, ListInfo } = require('../models/models');
 const ApiError = require('../error/ApiError');
 const { Sequelize } = require('sequelize');
 
@@ -62,7 +62,7 @@ class ProjectController {
     }
     async getForms(req, res, next) {
         try {
-            const forms = await Form.findAll({include:[{model: FormInfo}], order:[[FormInfo, 'createdAt', 'ASC']]})
+            const forms = await Form.findAll({include:[{model: FormInfo, include: [{model: ListInfo}]}], order:[[FormInfo, 'createdAt', 'ASC']]})
             res.json(forms)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
@@ -71,7 +71,7 @@ class ProjectController {
     async getForm(req, res, next) {
         try {
             const {formId} = req.query
-            const form = await Form.findOne({where: {id: formId}, include: [{model: FormInfo}], order:[[FormInfo, 'createdAt', 'ASC']]})
+            const form = await Form.findOne({where: {id: formId}, include: [{model: FormInfo, include: [{model: ListInfo}]}], order:[[FormInfo, 'createdAt', 'ASC']]})
             res.json(form)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
@@ -79,13 +79,22 @@ class ProjectController {
     }
     async addLayer(req, res, next) {
         try {
-            const {name, projectId} = req.body
-            if (!name || !projectId) {
+            const createLayer = req.body
+            var fileName = null
+            if (!createLayer.name || !createLayer.projectId) {
                 return next(ApiError.badRequest('Получены не все значения'))
             }
-            const createLayer = await Layer.create({name, projectId})
-            const layer = await Layer.findOne({where:{id: createLayer.id}, include: [{model: Task, include: [{model: TaskInfo}]}]})
+            if (req.files) {
+                var {image} = req.files
+            }
+            if (image) {
+                fileName = uuid.v4() + '.' + image.name.split('.').pop()
+                image.mv(path.resolve(__dirname, '..', 'static/layerImages', fileName))
+            }
+            const create = await Layer.create({name: createLayer.name, projectId: createLayer.projectId, plan: fileName})
+            const layer = await Layer.findOne({where:{id: create.id}, include: [{model: Task, include: [{model: TaskInfo}]}]})
             res.json(layer)
+            // res.json({stats:'da'})
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }
@@ -113,7 +122,6 @@ class ProjectController {
             if (image) {
                 fileName = uuid.v4() + '.' + image.image.name.split('.').pop()
             }
-            console.log(fileName)
             if (!formId || !layerId || !allValues) {
                 return next(ApiError.badRequest('Получены не все значения'))
             }
@@ -122,15 +130,25 @@ class ProjectController {
                     acc.push({[cur]: allValues[cur]})
                     return acc
                 }, []);
+                if (fileName) {
+                    image.image.mv(path.resolve(__dirname, '..', 'static/taskImages', fileName))
+                    console.log('Image moved!')
+                }
                 const task = await Task.create({formId, layerId, name: allValues['Название'], author, image: fileName})
-                image.image.mv(path.resolve(__dirname, '..', 'static/taskImages', fileName))
+                console.log('Task created!')
                 result.map((inf) => TaskInfo.create({taskId: task.id, name: Object.keys(inf)[0], value: Object.values(inf)[0]}))
+                console.log('TaskInfos created!')
                 res.json({status:'200'})
             } else {
                 const taskName = allValues.filter((inf) => inf.name === 'Название')[0].value
                 const task = await Task.update({name: taskName}, {where: {id: taskId}})
-                allValues.map((inf) => TaskInfo.update({value: inf.value}, {where: {taskId, name: inf.name}}))
-                res.json({status:'201'})
+                // allValues.map((inf) => TaskInfo.update({value: inf.value}, {where: {taskId, name: inf.name}}))
+                for (let i = 0; i < allValues.length; i++) {
+                    const inf = allValues[i];
+                    await TaskInfo.update({value: inf.value}, {where: {taskId, name: inf.name}})
+                }
+                const result = await Task.findOne({where: {name: taskName}, include: [{model: TaskInfo}]})
+                res.json(result)
             }
         } catch (e) {
             return next(ApiError.badRequest(e.message))
@@ -140,7 +158,6 @@ class ProjectController {
         try {
             const {layerId} = req.query
             const tasks = await Task.findAll({where:{layerId}, include: [{model: TaskInfo}], order:[['createdAt', 'DESC']]})
-            console.log(layerId)
             res.json(tasks)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
@@ -158,9 +175,26 @@ class ProjectController {
     async changeLayersPos(req, res, next) {
         try {
             const layers = req.body
-            console.log(layers)
             layers.map((layer) => Layer.update({pos: layer.pos}, {where:{id: layer.id}}))
             res.json({status:'200'})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async addListInfo(req, res, next) {
+        try {
+            const {name, formInfoId} = req.body
+            const ico = req.files?.ico
+            if (!name || !formInfoId) {
+                return next(ApiError.badRequest('Все значения нужны'))
+            }
+            var fileName = null
+            if (ico) {
+                fileName = uuid.v4() + '.' + ico.name.split('.').pop()
+                ico.mv(path.resolve(__dirname, '..', 'static/icoList', fileName))
+            }
+            await ListInfo.create({name, formInfoId, ico:fileName})
+            res.json({status: '200'})
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }

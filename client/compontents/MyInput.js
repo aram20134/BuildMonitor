@@ -1,8 +1,13 @@
-import { Image, StyleSheet, Text, View } from "react-native"
+import { Image, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
 import { BaseButton, BorderlessButton, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import * as ImagePicker from 'expo-image-picker'
 import Checkbox from "expo-checkbox"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import DropDownPicker from "react-native-dropdown-picker"
+import { REACT_NATIVE_API_URL } from "../api/variables"
+import { useFocusEffect } from "@react-navigation/native"
+import { Slider } from "@miblanchard/react-native-slider"
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from "react-native-reanimated";
 
 const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, chooseTime, onChangeText, value, type, onPress, image, setImage, returnKeyType, enabled = true, onCheckboxChange, defaultValue, dateValue}) => {
 
@@ -92,6 +97,119 @@ const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, c
                         </BorderlessButton>
                     </View>
                 </GestureHandlerRootView>
+            )
+        case 'list':
+            const [open, setOpen] = useState(false)
+            const [select, setSelect] = useState(defaultValue || null)
+            const [items, setItems] = useState([])
+
+            useEffect(() => {
+                setItems(value.sort((a, b) => a.id - b.id).map((val, i) => ({id:val.id, label: val.name, value: val.name, icon: () => (<Image source={{uri: `${REACT_NATIVE_API_URL}static/icoList/${val.ico}`}} resizeMode='contain' style={{width:15, height:15}} />)})))
+            }, [value])
+
+            useEffect(() => {
+                onChangeText(select)
+            }, [select])
+
+            return (
+                <View style={{...styles.inputContainer}}>
+                    <Text style={{fontSize:16, fontWeight:'bold', marginBottom:5}}>{required ? '* ' : ''}{title}</Text>
+                    <DropDownPicker itemSeparator={true} itemSeparatorStyle={{backgroundColor:'#dddd'}} modalAnimationType="fade" modalTitle={title} items={items} listMode='MODAL' setValue={setSelect} value={select} placeholder={placeholder} open={open} setOpen={setOpen} />
+                </View>
+            )
+        case 'slider':
+            const [progress, setProgress] = useState(Number(defaultValue) || 0)
+
+            useEffect(() => {
+                let timer = setTimeout(() => {
+                    onChangeText(progress)
+                }, 500);
+                return () => {
+                    clearTimeout(timer)
+                }
+            }, [progress])
+
+            return (
+                <View style={{...styles.inputContainer}}>
+                    <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                        <Text style={{fontSize:16, fontWeight:'bold', marginBottom:5}}>{required ? '* ' : ''}{title}</Text>
+                        <Text>{progress}</Text>
+                    </View>
+                    <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                        <TouchableWithoutFeedback onPress={() => setProgress(0)}>
+                            <Image source={require('../assets/close.png')} style={{width:18, height:18, tintColor:'#005D99'}} />
+                        </TouchableWithoutFeedback>
+                        <View style={{width:'75%'}}>
+                            <Slider animateTransitions minimumTrackTintColor={progress !== 100 ? '#005D99' : 'green'} thumbStyle={{backgroundColor:'white', borderWidth:2, borderColor:'#005D99'}} step={5} minimumValue={0} maximumValue={100} value={progress} onValueChange={(val) => setProgress(Math.floor(val))} />
+                        </View>
+                        <TouchableWithoutFeedback onPress={() => setProgress(100)}>
+                            <Image source={require('../assets/check.png')} style={{width:20, height:20, tintColor: progress !== 100 ? '#005D99' : 'green'}} />
+                        </TouchableWithoutFeedback>
+                    </View>
+                </View>
+            )
+        case 'btnList':
+            const [btns, setBtns] = useState(value.sort((a, b) => a.id - b.id))
+            const [chosed, setChosed] = useState(defaultValue || 'Средний')
+
+            useEffect(() => {
+              onChangeText(chosed)
+            }, [chosed])
+
+            const rotate = useSharedValue(0)
+
+            const reanimatedStyle = useAnimatedStyle(() => {
+                return {
+                    transform:[{rotate: `${rotate.value}deg`}],
+                }
+            }, [])
+            
+
+            const MyBtn = ({value, chosed}) => {
+                return (
+                    <GestureHandlerRootView>
+                        <View>
+                            <BaseButton onPress={() => setChosed(value.name)} style={{borderRadius:10, backgroundColor: !chosed ? '#dddd' : '#005D99'}}>
+                                <View accessible accessibilityRole="button" style={{padding:5, paddingLeft:20, paddingRight:20, display:'flex', flexDirection:'row', alignItems:'center'}}>
+                                    {/* <Image source={{uri: `${REACT_NATIVE_API_URL}static/icoList/${value.ico}`, width:30, height:30}} style={{marginRight:'3%'}} />  */}
+                                    <Text style={{color: !chosed ? 'black' : 'white'}}>{value.name}</Text>
+                                </View>
+                            </BaseButton>
+                        </View>
+                    </GestureHandlerRootView>
+                )
+            }
+
+            
+            useEffect(() => {
+              switch (chosed) {
+                case 'Низкий':
+                    rotate.value = withSpring(-180)
+                    break;
+                case 'Средний':
+                    rotate.value = withSpring(-90)
+                    break;
+                case 'Высокий':
+                    rotate.value = withSpring(0)
+                    break;
+                default:
+                    break;
+              }
+            }, [chosed])
+            
+            return (
+                <View style={{...styles.inputContainer}}>
+                    <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between', marginBottom:10}}>
+                        <Text style={{fontSize:16, fontWeight:'bold', marginBottom:5}}>{required ? '* ' : ''}{title}</Text>
+                        <View>
+                            <Animated.Image source={require('../assets/arrow.png')} style={[{width:50, height:50, position:'absolute', zIndex:100}, reanimatedStyle]} />
+                            <Animated.Image source={require('../assets/bar.png')} style={[{width:50, height:50}]} />
+                        </View>
+                    </View>
+                    <View style={{justifyContent:'space-around', display:'flex', flexDirection:'row'}}>
+                        {btns.map((val) => <MyBtn value={val} chosed={val.name === chosed} />)}
+                    </View>
+                </View>
             )
         default:
             return (

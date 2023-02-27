@@ -36,7 +36,7 @@ const CustomDrawer = ({ navigation }) => {
     }, [Keyboard.isVisible()])
 
     useEffect(() => {
-        getProjects().then((res) => setProjects(res)).finally(() => setLoading(false))
+        getProjects().then((res) => setProjects(res)).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
     }, [chosedProject])
 
     const Item = ({item, isProject = true}) => {

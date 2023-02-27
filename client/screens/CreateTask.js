@@ -10,6 +10,7 @@ import { BuildMonitor } from "../App"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { NestableScrollContainer } from "react-native-draggable-flatlist";
 
 const CreateTask = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
@@ -38,7 +39,6 @@ const CreateTask = ({ navigation }) => {
     }
     // allValues, formId, layerId, author, taskId
     console.log(allValues)
-    console.log(imageFile)
     createTask.append('allValues', JSON.stringify(allValues))
     createTask.append('formId', selectedForm?.id)
     createTask.append('layerId', chosedLayer.id)
@@ -46,7 +46,7 @@ const CreateTask = ({ navigation }) => {
   
     navigation.setOptions({
       headerRight: () => (
-          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then(() => navigation.goBack()).catch((e) => console.log(e))} />
+          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then(() => navigation.goBack()).catch((e) => console.log('btn:',e))} />
       ),
     })
   }, [loading, allValues, selectedForm])
@@ -76,19 +76,41 @@ const CreateTask = ({ navigation }) => {
   }, [selectedForm])
     
   return (
-    <ScrollView>
+    <NestableScrollContainer nestedScrollEnabled={true}>
       <View style={styles.container}>
         <View style={{...styles.btnCont, marginBottom:20, zIndex:1000, elevation:10 }}>
             <Text style={{marginBottom:5, fontWeight:'bold'}}>Форма</Text>
-            {!loading ? <DropDownPicker mode='BADGE' placeholder="Выберите форму" open={open} setOpen={setOpen} value={selectedForm} setValue={setSelectedForm} items={forms} setItems={setForms} /> : (<ActivityIndicator />)}
+            {!loading ? <DropDownPicker itemKey="id" listMode='SCROLLVIEW' theme='LIGHT' placeholder="Выберите форму" open={open} setOpen={setOpen} value={selectedForm} setValue={setSelectedForm} items={forms} /> : (<ActivityIndicator />)}
         </View>
         <View style={{width:'100%'}}>
           <MyInput enabled={!open} setImage={setImage} image={image} title={'Фотография'} type={'image'} />
         </View>
         <MyInput onChangeText={(text) => setAllValues({...allValues, ['Название']: text})} placeholder={'Добавить текст'} required type='text' title={'Название'} />
-        {selectedForm?.formInfos.map((info) => <MyInput timeValue={allValues[info.name] && format(allValues[info.name], 'HH:mm', {locale: ru})} dateValue={allValues[info.name] && format(allValues[info.name], 'dd.MM.yyyy', {locale: ru})} chooseTime={() => chooseTime(info)} chooseDate={() => chooseDate(info)} defaultValue={allValues[info.name]} onCheckboxChange={(val) => setAllValues({...allValues, [info.name]: val})} onChangeText={(text) => setAllValues({...allValues, [info.name]: text})} title={info.name} type={info.type} placeholder={'Добавить текст'} />)}
+        {selectedForm?.formInfos.map((info) => {
+          switch (info.type) {
+            case 'text':
+              // timeValue={allValues[info.name] && format(allValues[info.name], 'HH:mm', {locale: ru})} dateValue={allValues[info.name] && format(allValues[info.name], 'dd.MM.yyyy', {locale: ru})} chooseTime={() => chooseTime(info)} chooseDate={() => chooseDate(info)} defaultValue={allValues[info.name]} onCheckboxChange={(val) => setAllValues({...allValues, [info.name]: val})}
+              return <MyInput key={info.name} onChangeText={(text) => setAllValues({...allValues, [info.name]: text})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+            case 'date':
+              return <MyInput key={info.name} chooseDate={() => chooseDate(info)} dateValue={allValues[info.name] && format(allValues[info.name], 'dd.MM.yyyy', {locale: ru})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+            case 'time':
+              return <MyInput key={info.name} chooseTime={() => chooseTime(info)} timeValue={allValues[info.name] && format(allValues[info.name], 'HH:mm', {locale: ru})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+            case 'image': 
+              return <MyInput key={info.name} image={image} setImage={setImage} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+            case 'checkbox':
+              return <MyInput key={info.name} onCheckboxChange={(val) => setAllValues({...allValues, [info.name]: val})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+            case 'list':
+              return <MyInput onChangeText={(val) => setAllValues({...allValues, [info.name]: val})} value={info.listInfos} key={info.name} placeholder={'Выбрать'} defaultValue={allValues[info.name]} title={info.name} type={info.type} />
+            case 'slider':
+              return <MyInput onChangeText={(val) => setAllValues(prev => ({...prev, [info.name]: val}))} key={info.name} title={info.name} type={info.type} />
+            case 'btnList':
+              return <MyInput onChangeText={(val) => setAllValues(prev => ({...prev, [info.name]: val}))} value={info.listInfos} key={info.name} title={info.name} type={info.type} />
+            default:
+              return <Text key={'asd'}>Такого типа нету, макака</Text>
+          }
+        })}
       </View>
-    </ScrollView>
+    </NestableScrollContainer>
   );
 };
 

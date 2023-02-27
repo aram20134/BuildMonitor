@@ -13,15 +13,26 @@ const CreateLayer = ({ navigation }) => {
 	const [trigger, setTrigger] = useState(false)
 
 	useEffect(() => {
-	  console.log(chosedProject)
-	}, [])
+	  console.log(image)
+	}, [image])
 	
 
-	const pushAndNavigate = (res) => {
-		// console.log(({...chosedProject, layers: [...chosedProject.layers, {...res}]}))
+	const pushAndNavigate = () => {
+		const createLayer = new FormData()
+		if (image) {
+			var imageFile = {
+				uri: image.uri,
+				type: `image/${image.uri.split('.').pop()}`,
+				name: `photo.${image.uri.split('.').pop()}`
+			}
+			console.log(imageFile)
+			createLayer.append('image', imageFile)
+		  }
+		createLayer.append('name', name)
+		createLayer.append('projectId', chosedProject.id)
+		addLayer(createLayer).then((res) => setChosedProject(prev => ({...prev, layers: [...prev.layers, res]}))).catch((e) => {setTrigger(true), setTrigger(false)})
+		
 		navigation.goBack()
-		setChosedProject(prev => ({...prev, layers: [...prev.layers, res]}))
-		// setChosedProject(prev => prev)
 	}
 
 	return (
@@ -31,7 +42,7 @@ const CreateLayer = ({ navigation }) => {
 				<MyInput setImage={setImage} image={image} type={'image'} title={'Выберите чертёж'} />
 			</View>
 			<View style={{width:'95%', marginTop:15}}>
-				<Button onPress={() => addLayer(name, chosedProject.id).then((res) => pushAndNavigate(res)).catch((e) => {console.log(e)})} title="Добавить слой" />
+				<Button onPress={pushAndNavigate} title="Добавить слой" />
 			</View>
 			<MyError trigger={trigger} errorMsg={'Заполнены не все поля!'} />
 		</View>

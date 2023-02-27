@@ -12,8 +12,8 @@ export const getProjects = async () => {
     return data
 }
 
-export const addLayer = async (name, projectId) => {
-    const {data} = await host.post('/api/project/addLayer', {name, projectId})
+export const addLayer = async (createLayer) => {
+    const {data} = await host.post('/api/project/addLayer', createLayer, {headers: {"Content-Type": 'multipart/form-data'}})
     return data
 }
 
