@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid')
 const path = require('path')
-const { User, Project, Form, FormInfo, Layer, Task, TaskInfo, ListInfo } = require('../models/models');
+const { User, Project, Form, FormInfo, Layer, Task, TaskInfo, ListInfo, Access } = require('../models/models');
 const ApiError = require('../error/ApiError');
 const { Sequelize } = require('sequelize');
 
@@ -10,12 +10,13 @@ class ProjectController {
     async createProject(req, res, next) {
         try {
             const project = req.body
-            const {image} = req.files
-
-            let fileName = uuid.v4() + '.' + image.name.split('.').pop()
-            console.log(image)
-            console.log(project)
-            const check = Project.create({
+            let fileName = null
+            if (req.files) {
+                const {image} = req.files
+                fileName = uuid.v4() + '.' + image.name.split('.').pop()
+                image.mv(path.resolve(__dirname, '..', 'static/projectImages', fileName))
+            }
+            const check = await Project.create({
                 image: fileName,
                 name: project.projectName,
                 code: project.projectCode,
@@ -28,15 +29,24 @@ class ProjectController {
                 country: project.projectCountry,
                 city: project.projectCity
             })
-            image.mv(path.resolve(__dirname, '..', 'static/projectImages', fileName))
-            return res.json({check})
+            console.log(req.user)
+            Access.create({userId: req.user.id, projectId: check.id})
+            return res.json({status:200})
         } catch (e) {
+            console.log(e.message)
             return next(ApiError.badRequest(e.message))
         }
     }
     async getProjects(req, res, next) {
         try {
-            const projects = await Project.findAll({include:[{model: Layer, include: [{model: Task, include: [{model: TaskInfo}]}]}]})
+            var projects = []
+            const accesses = await Access.findAll({where:{userId: req.user.id}})
+            for (let i = 0; i < accesses.length; i++) {
+                const el = accesses[i];
+                var prj = await Project.findOne({where:{id: el.projectId}, include:[{model: Layer, include: [{model: Task, include: [{model: TaskInfo}]}]}]})
+                projects.push(prj)
+            }
+            // const projects = await Project.findAll({include:[{model: Layer, include: [{model: Task, include: [{model: TaskInfo}]}]}]})
             res.json(projects)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
@@ -138,7 +148,8 @@ class ProjectController {
                 console.log('Task created!')
                 result.map((inf) => TaskInfo.create({taskId: task.id, name: Object.keys(inf)[0], value: Object.values(inf)[0]}))
                 console.log('TaskInfos created!')
-                res.json({status:'200'})
+                const allTask = await Task.findOne({where: {name: allValues['Название']}, include: [{model: TaskInfo}]})
+                res.json(allTask)
             } else {
                 const taskName = allValues.filter((inf) => inf.name === 'Название')[0].value
                 const task = await Task.update({name: taskName}, {where: {id: taskId}})
@@ -195,6 +206,31 @@ class ProjectController {
             }
             await ListInfo.create({name, formInfoId, ico:fileName})
             res.json({status: '200'})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async getProjectUsers(req, res, next) {
+        try {
+            const { projectId } = req.query
+            const allUsers = await Access.findAll({where: {projectId}})
+            var users = []
+            for (let i = 0; i < allUsers.length; i++) {
+                const el = allUsers[i];
+                const user = await User.findOne({where:{id: el.userId}})
+                users.push(user)
+            }
+            res.json(users)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async addUserToProject (req, res, next) {
+        try {
+            const {userId, projectId} = req.body
+            await Access.create({userId, projectId})
+
+            res.json(true)
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }

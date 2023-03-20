@@ -20,7 +20,7 @@ const CreateTask = ({ navigation }) => {
   const [image, setImage] = useState()
 
   const [allValues, setAllValues] = useState({})
-  const { chosedLayer, user } = useContext(BuildMonitor)
+  const { setChosedLayer, chosedLayer, user, chosedProject, setChosedProject } = useContext(BuildMonitor)
 
   useEffect(() => {
     setLoading(true)
@@ -38,15 +38,19 @@ const CreateTask = ({ navigation }) => {
       createTask.append('image', imageFile)
     }
     // allValues, formId, layerId, author, taskId
-    console.log(allValues)
     createTask.append('allValues', JSON.stringify(allValues))
     createTask.append('formId', selectedForm?.id)
     createTask.append('layerId', chosedLayer.id)
     createTask.append('author', user.name)
+
+    const refreshData = (res) => {
+      setChosedLayer({...chosedLayer, tasks: [...chosedLayer.tasks, res]})
+      setChosedProject({...chosedProject, layers: [...chosedProject.layers.map((layer) => layer.id === chosedLayer.id ? {...layer, tasks: [...layer.tasks, res]} : layer)]})
+    }
   
     navigation.setOptions({
       headerRight: () => (
-          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then(() => navigation.goBack()).catch((e) => console.log('btn:',e))} />
+          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then((res) => {refreshData(res), navigation.goBack()}).catch((e) => console.log('btn:',e))} />
       ),
     })
   }, [loading, allValues, selectedForm])

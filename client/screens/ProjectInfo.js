@@ -17,32 +17,16 @@ const ProjectInfo = ({navigation}) => {
         navigation.setOptions({title: chosedProject.name})
     }, [navigation])
 
-    // <View style={{position:'relative', overflow:'hidden'}}>
-    //     <ImageZoom ref={img} enableSwipeDown={false} minScale={1} cropWidth={500} cropHeight={250} imageWidth={410} imageHeight={250}>
-    //         <Image source={{uri: `${REACT_NATIVE_API_URL}static/projectImages/${chosedProject.image}`, height:250, width:'100%'}} resizeMode='cover'  />  
-    //         {/* <Image source={require('../assets/marker.png')} style={{position:'absolute', color:'white', zIndex:200, transform:[{translateX: x}, {translateY: y}], width:20, height:20}} /> */}
-    //     </ImageZoom>
-    //     <Draggable maxY={340} minY={-150} maxX={650} minX={-150} onDragRelease={handle}>
-    //         <View style={{width:420, height:250, alignItems:'center', justifyContent:'center'}}>
-    //             <Image style={{width:50, height:50, zIndex:200}} source={require('../assets/marker.png')} />
-    //             <View style={{borderBottomWidth:1, borderBottomColor:'red', width:1000, transform:[{rotate:'90deg'}], borderStyle:'dashed'}}></View>
-    //             <View style={{borderBottomWidth:1, borderBottomColor:'red', width:1000, borderStyle:'dashed'}}></View>
-    //         </View>
-    //     </Draggable>
-    // {/* maxY={250} minY={0} maxX={420} minX={0} * 2 Для бокса ещё паддинг */}
-    // </View>
-
-
     return (
         <ScrollView style={{backgroundColor:'#d8f4ff'}}>
             <View style={styles.container}>
                 <Image source={{uri: `${REACT_NATIVE_API_URL}static/projectImages/${chosedProject.image}`, height:250, width:'100%'}} resizeMode='cover'  />  
                 <View style={styles.btnCont}>
-                    <ArrowButton title={'Статистика проекта'} />
+                    <ArrowButton onPress={() => navigation.navigate('Статистика проекта')} title={'Статистика проекта'} />
                 </View>
                 <View style={styles.btnCont}>
                     <Text style={{marginLeft:15, marginTop:5, fontWeight:'bold', fontSize:16}}>Управление проектом</Text>
-                    <ArrowButton title={'Пользователи'} />
+                    <ArrowButton onPress={() => navigation.navigate('Пользователи')} title={'Пользователи'} />
                     <ArrowButton title={'Формы'} />
                 </View>
                 <View style={{...styles.btnCont, marginBottom:10}}>

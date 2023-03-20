@@ -11,7 +11,9 @@ const authHost = axios.create({
 })
 
 const authInterceptor = async (config) => {
-    const token = await AsyncStorage.getItem('token')
+    var token = await AsyncStorage.getItem('token')
+    // console.log(JSON.parse(token))
+    console.log('config token', token)
     config.headers.Authorization = `Bearer ${token}`
     return config
 }

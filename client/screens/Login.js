@@ -10,7 +10,7 @@ import MyError from "../compontents/MyError";
 
 
 const Login = ({ navigation }) => {
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false)
   const [nextStep, setNextStep] = useState(false)
@@ -20,7 +20,7 @@ const Login = ({ navigation }) => {
 
   const checkName = () => {
     setLoading(true)
-    checkLogin(name).then((res) => {
+    checkLogin(email).then((res) => {
       setNextStep(res.user)
     }).catch((e) => {
       setTriggerError(true)
@@ -30,8 +30,7 @@ const Login = ({ navigation }) => {
 
   const LogIn = (e) => {
     setLoading(true)
-    log(name, password).then(res => {
-      AsyncStorage.setItem('token', JSON.stringify(res))
+    log(email, password).then(res => {
       setIsAuth(true)
       setUser(res)
       return res
@@ -55,7 +54,7 @@ const Login = ({ navigation }) => {
         <View style={{position:'relative', display:'flex'}}>
           <View style={{display:'flex', justifyContent:'center', marginBottom: 15}}>
             <Image resizeMode='contain' resizeMethod='resize' source={require('../assets/user.png')} style={{position:'absolute', zIndex:10, width:20, left:5}} />
-            <TextInput cursorColor={'black'} autoComplete="email" returnKeyType="next" blurOnSubmit={false} onSubmitEditing={checkName} editable={!nextStep} style={{...styles.TextInput, paddingLeft: 30, backgroundColor: nextStep ? 'white' : '#d4edff'}} onChangeText={setName} value={name} placeholder='Имя пользователя (e-mail)' />
+            <TextInput cursorColor={'black'} autoComplete="email" returnKeyType="next" blurOnSubmit={false} onSubmitEditing={checkName} editable={!nextStep} style={{...styles.TextInput, paddingLeft: 30, backgroundColor: nextStep ? 'white' : '#d4edff'}} onChangeText={setEmail} value={email} placeholder='Имя пользователя (e-mail)' />
           </View>
         </View>
         {nextStep && <TextInput cursorColor={'black'} autoFocus={true} blurOnSubmit={false} onSubmitEditing={LogIn} secureTextEntry={true} style={{...styles.TextInput, marginBottom: 15}} onChangeText={setPassword} value={password} placeholder='Пароль' />}

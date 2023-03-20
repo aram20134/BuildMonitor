@@ -3,12 +3,12 @@ import jwt_decode from 'jwt-decode';
 import { authHost, host } from '.';
 
 export const createProject = async (project) => {
-    const {data} = await host.post('api/project/createProject', project, {headers: {"Content-Type": 'multipart/form-data'}})
+    const {data} = await authHost.post('api/project/createProject', project, {headers: {"Content-Type": 'multipart/form-data'}})
     return data
 }
 
 export const getProjects = async () => {
-    const {data} = await host.get('api/project/getProjects')
+    const {data} = await authHost.get('api/project/getProjects')
     return data
 }
 
@@ -44,5 +44,17 @@ export const getForm = async (formId) => {
 
 export const changeLayersPos = async (layers) => {
     const {data} = await host.post('/api/project/changeLayersPos', layers)
+    return data
+}
+
+export const getProjectUsers = async (projectId) => {
+    const {data} = await host.get('/api/project/getProjectUsers', {params: {
+        projectId
+    }})
+    return data
+}
+
+export const addUserToProject = async (projectId, userId) => {
+    const {data} = await host.post('/api/project/addUserToProject', {projectId, userId})
     return data
 }

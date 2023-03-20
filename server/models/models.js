@@ -3,7 +3,8 @@ const sequelize = require("../db");
 
 const User = sequelize.define("users", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true },
+  name: { type: DataTypes.STRING },
+  email: { type: DataTypes.STRING, unique: true },
   password: { type: DataTypes.STRING },
 });
 
@@ -60,6 +61,13 @@ const ListInfo = sequelize.define('listInfos', {
   ico: { type: DataTypes.STRING }
 })
 
+const Access = sequelize.define('access', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+})
+
+User.belongsToMany(Project, {through: Access})
+Project.belongsToMany(User, {through: Access})
+
 Project.hasMany(Layer)
 Layer.belongsTo(Project)
 
@@ -79,5 +87,5 @@ FormInfo.hasMany(ListInfo)
 ListInfo.belongsTo(FormInfo)
 
 module.exports = {
-  User, Project, Layer, Form, Task, FormInfo, TaskInfo, ListInfo
+  User, Project, Layer, Form, Task, FormInfo, TaskInfo, ListInfo, Access
 };

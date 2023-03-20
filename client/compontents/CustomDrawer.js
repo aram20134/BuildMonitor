@@ -1,4 +1,4 @@
-import { DrawerContentScrollView } from "@react-navigation/drawer"
+import { DrawerContentScrollView, useDrawerStatus } from "@react-navigation/drawer"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Button, Image, Keyboard, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -7,7 +7,7 @@ import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { BaseButton, FlatList, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import { getProjects } from "../api/projectAPI"
-import { useFocusEffect } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import MyButton from "./MyButton"
 
 const CustomDrawer = ({ navigation }) => {
@@ -20,20 +20,25 @@ const CustomDrawer = ({ navigation }) => {
     const createProject = () => {
         navigation.navigate('Создать проект')
     }
-
     useFocusEffect(useCallback(() => {
         setLoading(true)
         getProjects().then((res) => setProjects(res)).finally(() => setLoading(false))
     }, []))
+    const drawer = useDrawerStatus()
 
-    useEffect(() => {
-      console.log(chosedProject)
-    }, [chosedProject])
+    // useEffect(() => {
+    //   getProjects().then((res) => setProjects(res)).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
+    // }, [drawer])
     
 
     useEffect(() => {
       setSearch('')
     }, [Keyboard.isVisible()])
+
+    useEffect(() => {
+      console.log(chosedLayer)
+    }, [chosedLayer])
+    
 
     useEffect(() => {
         getProjects().then((res) => setProjects(res)).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
@@ -91,7 +96,7 @@ const CustomDrawer = ({ navigation }) => {
                             }
                         </View>
                         <View style={{width:'90%', borderWidth:2, borderColor:'#42b3ff', alignSelf:'center', margin:10, borderRadius:5}}>
-                            <MyButton onPress={() => navigation.navigate('Информация проекта')} title={'Показать сведения о проекте'} custom={{text: {color:'#42b3ff'}, button: {justifyContent:'center', alignItems:'center', paddingLeft:'5%', paddingRight:'5%', paddingTop:7, paddingBottom:7}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
+                            <MyButton onPress={() => navigation.navigate('Информация проекта')} title={'Показать сведения о проекте'} custom={{text: {color:'#42b3ff', width:'100%'}, button: {justifyContent:'center', alignItems:'center', paddingTop:7, paddingBottom:7, width:'100%'}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
                         </View>
                         <View style={styles.listContainer}>
                             {chosedProject.layers.filter((pr) => pr.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos).map((layer) => <Item key={layer.name} isProject={false} item={layer} />)}

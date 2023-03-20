@@ -6,9 +6,9 @@ import { BaseButton, GestureHandlerRootView, TextInput } from "react-native-gest
 import { Header } from "react-native/Libraries/NewAppScreen"
 import { changeLayersPos, getProjects } from "../api/projectAPI"
 import { BuildMonitor } from "../App"
+import MySearch from "../compontents/MySearch"
 
 const ManageLayers = ({ navigation }) => {
-	const [searching, setSearching] = useState(false)
 	const [search, setSearch] = useState('')
 	const [layers, setLayers] = useState([])
 	const { chosedProject, setChosedProject, setProjects } = useContext(BuildMonitor)
@@ -16,12 +16,10 @@ const ManageLayers = ({ navigation }) => {
 
 	const onRefresh = () => {
 		setLayers(chosedProject.layers)
-		console.log(chosedProject.layers)
 	}
 
 	useEffect(() => {
 		if (layers.length) {
-			console.log(layers)
 			changeLayersPos(layers).then((res) => console.log(res))
 			setChosedProject(prev => ({...prev, layers: layers}))
 		}
@@ -31,7 +29,7 @@ const ManageLayers = ({ navigation }) => {
 		console.log('layers')
 		setLayers(chosedProject.layers)
 		navigation.setOptions({title: chosedProject.name})
-    }, []))
+	}, []))
 	
 	// setLayers(prev => prev.map((layer, i) => ({...layer, pos: i}) )), 
 	// () => setLayers(prev => prev.map((layer, i) => ({...layer, pos: i}) ))
@@ -64,13 +62,7 @@ const ManageLayers = ({ navigation }) => {
 		<NestableScrollContainer refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 			<GestureHandlerRootView>
 				<View style={styles.container}>
-					<View style={{...styles.cont, backgroundColor:'#DDDD', borderRadius:5, marginTop:10, justifyContent:'center', paddingLeft:30}}>
-						<TextInput value={search} onChangeText={(text) => setSearch(text)} onTouchStart={() => setSearching(true)} onEndEditing={() => setSearching(false)} placeholder="Поиск" />
-						{searching
-						? <Image source={require('../assets/closeBlack.png')} resizeMode='contain' style={{width:30, height:30, transform: [{scale: 0.5}], position:'absolute'}} />
-						: <Image source={require('../assets/searchBlack.png')} resizeMode='contain' style={{width:25, height:25, position:'absolute'}} />
-						}
-					</View>
+					<MySearch search={search} setSearch={setSearch} />
 					<View style={{...styles.cont, marginTop:10, marginBottom:20, padding:0, borderRadius:10}}>
 						<BtnIco />
 					</View>
