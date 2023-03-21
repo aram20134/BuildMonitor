@@ -1,15 +1,16 @@
-import { Image, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
+import { Button, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
 import { BaseButton, BorderlessButton, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import * as ImagePicker from 'expo-image-picker'
 import Checkbox from "expo-checkbox"
 import { useCallback, useEffect, useState } from "react"
 import DropDownPicker from "react-native-dropdown-picker"
 import { REACT_NATIVE_API_URL } from "../api/variables"
-import { useFocusEffect } from "@react-navigation/native"
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native"
 import { Slider } from "@miblanchard/react-native-slider"
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring } from "react-native-reanimated";
+import MyButton from "./MyButton"
 
-const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, chooseTime, onChangeText, value, type, onPress, image, setImage, returnKeyType, enabled = true, onCheckboxChange, defaultValue, dateValue}) => {
+const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, chooseTime, onChangeText, value, type, onPress, image, setImage, returnKeyType, enabled = true, onCheckboxChange, defaultValue, dateValue, editable = true}) => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -25,12 +26,15 @@ const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, c
           }
     }
 
+    const navigation = useNavigation()
+    const route = useRoute()
+
     switch (type) {
         case 'text':
             return (
                 <View style={styles.inputContainer}>
                     <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
-                    <TextInput defaultValue={defaultValue} returnKeyType={returnKeyType} value={value} placeholder={placeholder} onChangeText={onChangeText} />
+                    <TextInput style={{color:'black'}} editable={editable} defaultValue={defaultValue} returnKeyType={returnKeyType} value={value} placeholder={placeholder} onChangeText={onChangeText} />
                 </View>
             )
         case 'date':
@@ -209,6 +213,29 @@ const MyInput = ({title, required = false, placeholder, chooseDate, timeValue, c
                     <View style={{justifyContent:'space-around', display:'flex', flexDirection:'row'}}>
                         {btns.map((val) => <MyBtn value={val} chosed={val.name === chosed} />)}
                     </View>
+                </View>
+            )
+        case 'user':
+            const [user, setUser] = useState(defaultValue)
+
+            useEffect(() => {
+                if (route.params?.user?.name) {
+                    setUser(route.params?.user?.name)
+                }
+            }, [route])
+            
+            useEffect(() => {
+                console.log('user', user)
+                if (user) {
+                    onChangeText(user)
+                }
+            }, [user])
+            
+            
+            return (
+                <View style={styles.inputContainer}>
+                    <Text style={{fontSize:16, fontWeight:'bold'}}>{required ? '* ' : ''}{title}</Text>
+                    <MyButton onPress={() => navigation.navigate({name: 'Пользователи', params:{userPick: true}})} title={user ? user : 'Выбрать'} custom={{button:{height:35, display:'flex', alignItems:'center', justifyContent:'center', backgroundColor:'#2894f4', borderRadius:5}, text:{color:'white', fontWeight:'bold'}}} />
                 </View>
             )
         default:

@@ -16,12 +16,6 @@ const signJWT = ({id, name, email}) => {
 
 class UserController {
     async reg (req, res, next) {
-        // try {
-        //     const check = await User.findOne({where:{id:3}, include:[{model: Access}]})
-        //     res.json(check)
-        // } catch (e) {
-        //     console.log(e.message)
-        // }
         try {
             const {email, password} = req.body
             if (!email || !password) {

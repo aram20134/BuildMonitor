@@ -30,7 +30,7 @@ class ProjectController {
                 city: project.projectCity
             })
             console.log(req.user)
-            Access.create({userId: req.user.id, projectId: check.id})
+            Access.create({userId: req.user.id, projectId: check.id, role: 'Администратор'})
             return res.json({status:200})
         } catch (e) {
             console.log(e.message)
@@ -218,7 +218,7 @@ class ProjectController {
             for (let i = 0; i < allUsers.length; i++) {
                 const el = allUsers[i];
                 const user = await User.findOne({where:{id: el.userId}})
-                users.push(user)
+                users.push({...user.dataValues, role: el.role})
             }
             res.json(users)
         } catch (e) {
@@ -228,9 +228,29 @@ class ProjectController {
     async addUserToProject (req, res, next) {
         try {
             const {userId, projectId} = req.body
-            await Access.create({userId, projectId})
+            await Access.create({userId, projectId, role: 'Сотрудник'})
 
             res.json(true)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async removeUserFromProject (req, res, next) {
+        try {
+            const {userId, projectId} = req.body
+            await Access.destroy({where: {projectId, userId}})
+            res.json(true)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+    async getProjectUser (req, res, next) {
+        try {
+            const {projectId} = req.query
+            console.log(projectId)
+            const user = await User.findOne({where: {id: req.user.id}})
+            const acc = await Access.findOne({where: {projectId, userId: req.user.id}})
+            res.json({...user.dataValues, role: acc.role})
         } catch (e) {
             return next(ApiError.badRequest(e.message))
         }

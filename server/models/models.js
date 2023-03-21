@@ -63,6 +63,7 @@ const ListInfo = sequelize.define('listInfos', {
 
 const Access = sequelize.define('access', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  role: { type: DataTypes.STRING }
 })
 
 User.belongsToMany(Project, {through: Access})

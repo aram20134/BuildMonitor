@@ -11,6 +11,7 @@ import ManageLayers from "../screens/ManageLayers"
 import ProjectInfo from "../screens/ProjectInfo"
 import Task from "../screens/Task"
 import Test from "../screens/Test"
+import UserInfo from "../screens/UserInfo"
 import Users from "../screens/Users"
 import ProjectStats from './../screens/ProjectStats';
 
@@ -25,6 +26,7 @@ export const PrivateRoutes = [
     {component: ProjectStats, name: 'Статистика проекта', options: {headerStyle: {backgroundColor: '#005D99'}}},
     {component: Users, name: 'Пользователи', options: {headerStyle: {backgroundColor: '#005D99'}}},
     {component: AddUser, name: 'Добавить', options: {headerStyle: {backgroundColor: '#005D99'}}},
+    {component: UserInfo, name: 'UserInfo', options: {headerStyle: {backgroundColor: '#005D99'}}},
     
 ]
 

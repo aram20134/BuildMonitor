@@ -17,6 +17,8 @@ router.post('/changeLayersPos', projectController.changeLayersPos)
 router.post('/addListInfo', projectController.addListInfo)
 router.get('/getProjectUsers', projectController.getProjectUsers)
 router.post('/addUserToProject', projectController.addUserToProject)
+router.post('/removeUserFromProject', projectController.removeUserFromProject)
+router.get('/getProjectUser', auth, projectController.getProjectUser)
 
 module.exports = router
 

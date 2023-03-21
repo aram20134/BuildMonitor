@@ -53,6 +53,7 @@ const CreateTask = ({ navigation }) => {
           <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then((res) => {refreshData(res), navigation.goBack()}).catch((e) => console.log('btn:',e))} />
       ),
     })
+    console.log(allValues)
   }, [loading, allValues, selectedForm])
 
   const chooseDate = (info) => {
@@ -109,8 +110,10 @@ const CreateTask = ({ navigation }) => {
               return <MyInput onChangeText={(val) => setAllValues(prev => ({...prev, [info.name]: val}))} key={info.name} title={info.name} type={info.type} />
             case 'btnList':
               return <MyInput onChangeText={(val) => setAllValues(prev => ({...prev, [info.name]: val}))} value={info.listInfos} key={info.name} title={info.name} type={info.type} />
+            case 'user':
+              return <MyInput key={info.name} title={info.name} type={info.type} onChangeText={(val) => setAllValues(prev => ({...prev, [info.name]: val}))} />
             default:
-              return <Text key={'asd'}>Такого типа нету, макака</Text>
+              return <Text key={'asd'}>Такого типа нету: {info.type}, макака</Text>
           }
         })}
       </View>

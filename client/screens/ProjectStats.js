@@ -68,7 +68,7 @@ const ProjectStats = () => {
       </View>
       <View>
         {tasks.map((t) => 
-          <View key={t.id} style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+          <View key={t.key} style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-start', alignItems:'center'}}>
               <Svg style={{display:'flex', flexDirection:'row'}} key={t.name} height="40" width="40">
                 <Circle cx="20" cy="20" r="10" fill={t.svg.fill} />

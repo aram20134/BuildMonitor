@@ -169,7 +169,7 @@ const Task = ({ route, navigation }) => {
                 case 'date':
                   return <MyInput key={form.id} chooseDate={() => chooseDate(pair)} value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} dateValue={pair.value !== null ? format(new Date(pair.value), 'dd.MM.yyyy', {locale: ru}) : 'Выбрать'} defaultValue={pair.value}  onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
                 case 'slider':
-                  return <MyInput key={form.id}  value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} defaultValue={pair.value} onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
+                  return <MyInput key={form.id} value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} defaultValue={pair.value} onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
                 default:
                   return <MyInput key={form.id} value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} defaultValue={pair.value} onCheckboxChange={(chk) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: chk} : val))} onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
               }

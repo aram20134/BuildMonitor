@@ -58,3 +58,15 @@ export const addUserToProject = async (projectId, userId) => {
     const {data} = await host.post('/api/project/addUserToProject', {projectId, userId})
     return data
 }
+
+export const removeUserFromProject = async (projectId, userId) => {
+    const {data} = await host.post('/api/project/removeUserFromProject', {projectId, userId})
+    return data
+}
+
+export const getProjectUser = async (projectId) => {
+    const {data} = await authHost.get('/api/project/getProjectUser', {params: {
+        projectId
+    }})
+    return data
+}
