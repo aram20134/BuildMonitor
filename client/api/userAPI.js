@@ -20,7 +20,7 @@ export const checkLogin = async (email) => {
 
 export const checkUser = async () => {
     const {data} = await authHost.get('api/user/check')
-    await AsyncStorage.setItem('token', data.token)
+    await AsyncStorage.setItem('token', JSON.stringify(data.token))
     return jwt_decode(data.token)
 }
 

@@ -60,7 +60,7 @@ const Tasks = () => {
       const makeBefore = task.taskInfos.filter((info) => info.name === 'Выполнить до')[0]?.value
       const attach = task.image ? true : false
       const priority = task.taskInfos.filter((info) => info.name === 'Приоритет')[0]?.value
-
+      console.log(priority)
       const PerfImage = () => {
         switch (priority) {
           case 'Высокий':
@@ -119,6 +119,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#2f53c0', borderColor:'#2f53c0', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
                 </View>
@@ -141,6 +142,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#63ad01', borderColor:'#63ad01', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
                 </View>
@@ -163,6 +165,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#f0a801', borderColor:'#f0a801', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
                 </View>
@@ -185,6 +188,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#646458', borderColor:'#646458', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
                 </View>
@@ -207,6 +211,7 @@ const Tasks = () => {
                     <Text style={{marginRight:7, color:'white', borderWidth:1, backgroundColor:'#b2b2b2', borderColor:'#b2b2b2', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
                 </View>

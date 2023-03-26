@@ -27,7 +27,7 @@ const ProjectInfo = ({navigation}) => {
                 <View style={styles.btnCont}>
                     <Text style={{marginLeft:15, marginTop:5, fontWeight:'bold', fontSize:16}}>Управление проектом</Text>
                     <ArrowButton onPress={() => navigation.navigate('Пользователи')} title={'Пользователи'} />
-                    <ArrowButton title={'Формы'} />
+                    {/* <ArrowButton title={'Формы'} /> */}
                 </View>
                 <View style={{...styles.btnCont, marginBottom:10}}>
                     <Text style={{marginLeft:15, marginTop:5, fontWeight:'bold', fontSize:16}}>Информация о проекте</Text>

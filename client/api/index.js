@@ -14,7 +14,7 @@ const authInterceptor = async (config) => {
     var token = await AsyncStorage.getItem('token')
     // console.log(JSON.parse(token))
     console.log('config token', token)
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers.Authorization = `Bearer ${JSON.parse(token)}`
     return config
 }
 authHost.interceptors.request.use(authInterceptor)

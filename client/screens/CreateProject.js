@@ -95,7 +95,7 @@ const CreateProject = ({ navigation }) => {
         }
       navigation.setOptions({
         headerRight: () => (
-            <MyButton enabled={!loading} title={'Сохранить'} onPress={saveProject} />
+            <MyButton custom={{text: {color:'white', fontWeight:'500', padding:10}}} enabled={!loading} title={'Сохранить'} onPress={saveProject} />
         )
       })
     
