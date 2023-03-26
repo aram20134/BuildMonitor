@@ -60,7 +60,6 @@ const Tasks = () => {
       const makeBefore = task.taskInfos.filter((info) => info.name === 'Выполнить до')[0]?.value
       const attach = task.image ? true : false
       const priority = task.taskInfos.filter((info) => info.name === 'Приоритет')[0]?.value
-      console.log(priority)
       const PerfImage = () => {
         switch (priority) {
           case 'Высокий':
@@ -316,7 +315,7 @@ const Plans = () => {
               </Draggable> */}
             </ImageZoom>
           </ImageBackground>
-          <AddTskBtn onPress={() => setPos(true)} />
+          {/* <AddTskBtn onPress={() => setPos(true)} /> */}
       </View>
     ) : (
       <View style={styles.container2}>

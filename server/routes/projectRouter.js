@@ -19,6 +19,7 @@ router.get('/getProjectUsers', projectController.getProjectUsers)
 router.post('/addUserToProject', projectController.addUserToProject)
 router.post('/removeUserFromProject', projectController.removeUserFromProject)
 router.get('/getProjectUser', auth, projectController.getProjectUser)
+router.post('/delTask', auth, projectController.delTask)
 
 module.exports = router
 

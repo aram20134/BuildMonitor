@@ -4,7 +4,7 @@ import { ru } from "date-fns/locale";
 import { useContext, useEffect, useState } from "react"
 import { ActivityIndicator, Button, Image, StyleSheet, Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler";
-import { addTask, getForm } from "../api/projectAPI";
+import { addTask, delTask, getForm } from "../api/projectAPI";
 import { REACT_NATIVE_API_URL } from "../api/variables";
 import { BuildMonitor } from "../App";
 import MyInput from "../compontents/MyInput";
@@ -22,7 +22,7 @@ const Task = ({ route, navigation }) => {
       navigation.setOptions({
         title: `${task.id} - ${task.name}`,
         headerRight: () => (
-          <Button title="Удалить" color={'darkred'} onPress={() => console.log('first')} />
+          <Button title="Удалить" color={'darkred'} onPress={() => delTask(task.id)} />
         )
       })
     }, [navigation])
@@ -170,6 +170,8 @@ const Task = ({ route, navigation }) => {
                   return <MyInput key={form.id} chooseDate={() => chooseDate(pair)} value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} dateValue={pair.value !== null ? format(new Date(pair.value), 'dd.MM.yyyy', {locale: ru}) : 'Выбрать'} defaultValue={pair.value}  onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
                 case 'slider':
                   return <MyInput key={form.id} value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} defaultValue={pair.value} onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
+                case 'list':
+                  return <MyInput key={form.id} value={form.listInfos} placeholder={'Выбрать'} type={form.type} title={form.name} defaultValue={pair.value} onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
                 default:
                   return <MyInput key={form.id} value={form.listInfos} placeholder={'Добавить текст'} type={form.type} title={form.name} defaultValue={pair.value} onCheckboxChange={(chk) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: chk} : val))} onChangeText={(text) => setAllValues(prev => prev.map((val) => val.name === form.name ? {...val, value: text} : val))} />
               }

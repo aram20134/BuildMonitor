@@ -11,6 +11,7 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { NestableScrollContainer } from "react-native-draggable-flatlist";
+import MyError from "../compontents/MyError";
 
 const CreateTask = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
@@ -20,7 +21,7 @@ const CreateTask = ({ navigation }) => {
   const [image, setImage] = useState()
 
   const [allValues, setAllValues] = useState({})
-  const { setChosedLayer, chosedLayer, user, chosedProject, setChosedProject } = useContext(BuildMonitor)
+  const { setChosedLayer, chosedLayer, user, chosedProject, setChosedProject, setTrigger, setError } = useContext(BuildMonitor)
 
   useEffect(() => {
     setLoading(true)
@@ -50,7 +51,7 @@ const CreateTask = ({ navigation }) => {
   
     navigation.setOptions({
       headerRight: () => (
-          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then((res) => {refreshData(res), navigation.goBack()}).catch((e) => console.log('btn:',e))} />
+          <MyButton custom={{text: {color:'#005D99', padding:10, paddingBottom: 5, paddingTop:5, backgroundColor:'white', borderRadius:5}}} enabled={!loading} title={"Сохранить"} onPress={() => addTask(createTask).then((res) => {refreshData(res), navigation.goBack()}).catch((e) => {setError('Заполнены не все обязательные поля!'), setTrigger(true), setTrigger(false)})} />
       ),
     })
     console.log(allValues)
@@ -81,7 +82,7 @@ const CreateTask = ({ navigation }) => {
   }, [selectedForm])
     
   return (
-    <NestableScrollContainer nestedScrollEnabled={true}>
+    <NestableScrollContainer nestedScrollEnabled={true} style={{flex:1}}>
       <View style={styles.container}>
         <View style={{...styles.btnCont, marginBottom:20, zIndex:1000, elevation:10 }}>
             <Text style={{marginBottom:5, fontWeight:'bold'}}>Форма</Text>

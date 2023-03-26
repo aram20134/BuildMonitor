@@ -78,7 +78,7 @@ Task.belongsTo(Layer)
 Form.hasMany(Task)
 Task.belongsTo(Form)
 
-Task.hasMany(TaskInfo)
+Task.hasMany(TaskInfo, {onDelete: 'cascade'})
 TaskInfo.belongsTo(Task)
 
 Form.hasMany(FormInfo)

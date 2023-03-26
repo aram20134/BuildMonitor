@@ -70,3 +70,8 @@ export const getProjectUser = async (projectId) => {
     }})
     return data
 }
+
+export const delTask = async (taskId) => {
+    const {data} = await authHost.post('/api/project/delTask', {taskId})
+    return data
+}

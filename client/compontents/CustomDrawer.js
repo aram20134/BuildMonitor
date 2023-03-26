@@ -26,19 +26,20 @@ const CustomDrawer = ({ navigation }) => {
     }, []))
     const drawer = useDrawerStatus()
 
-    // useEffect(() => {
-    //   getProjects().then((res) => setProjects(res)).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
-    // }, [drawer])
+    useEffect(() => {
+      getProjects().then((res) => {
+        console.log('fetched')
+        setProjects(res)
+        if (chosedProject) {
+            setChosedProject(res.filter((prj) => prj.id === chosedProject.id)[0])
+        }
+    }).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
+    }, [drawer])
     
 
     useEffect(() => {
       setSearch('')
     }, [Keyboard.isVisible()])
-
-    useEffect(() => {
-      console.log(chosedLayer)
-    }, [chosedLayer])
-    
 
     useEffect(() => {
         getProjects().then((res) => setProjects(res)).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))

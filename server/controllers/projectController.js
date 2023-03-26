@@ -89,10 +89,10 @@ class ProjectController {
     }
     async addLayer(req, res, next) {
         try {
-            const createLayer = req.body
+            const {name, projectId} = req.body
             var fileName = null
-            if (!createLayer.name || !createLayer.projectId) {
-                return next(ApiError.badRequest('Получены не все значения'))
+            if (!name || !projectId) {
+                next(ApiError.badRequest('Получены не все значения'))
             }
             if (req.files) {
                 var {image} = req.files
@@ -101,7 +101,7 @@ class ProjectController {
                 fileName = uuid.v4() + '.' + image.name.split('.').pop()
                 image.mv(path.resolve(__dirname, '..', 'static/layerImages', fileName))
             }
-            const create = await Layer.create({name: createLayer.name, projectId: createLayer.projectId, plan: fileName})
+            const create = await Layer.create({name, projectId, plan: fileName})
             const layer = await Layer.findOne({where:{id: create.id}, include: [{model: Task, include: [{model: TaskInfo}]}]})
             res.json(layer)
             // res.json({stats:'da'})
@@ -253,6 +253,16 @@ class ProjectController {
             res.json({...user.dataValues, role: acc.role})
         } catch (e) {
             return next(ApiError.badRequest(e.message))
+        }
+    }
+    async delTask (req, res, next) {
+        try {
+            const {taskId} = req.body
+            console.log(taskId)
+            await Task.destroy({where:{id: taskId}})
+            res.json(true)
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
         }
     }
 }
