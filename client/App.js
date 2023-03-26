@@ -15,8 +15,6 @@ export default function App() {
   const [chosedLayer, setChosedLayer] = useState()
   const [trigger, setTrigger] = useState(false)
   const [error, setError] = useState('')
-
-  // const insets = useSafeAreaInsets()
   
 
   return (
