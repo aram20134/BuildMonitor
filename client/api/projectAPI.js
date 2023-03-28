@@ -18,7 +18,9 @@ export const addLayer = async (createLayer) => {
 }
 
 export const getLayers = async (projectId) => {
-    const {data} = await host.get('/api/project/getLayers', {projectId})
+    const {data} = await host.get('/api/project/getLayers', {params: {
+        projectId
+    }})
     return data
 }
 

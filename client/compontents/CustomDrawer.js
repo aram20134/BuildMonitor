@@ -1,6 +1,6 @@
 import { DrawerContentScrollView, useDrawerStatus } from "@react-navigation/drawer"
 import { useCallback, useContext, useEffect, useState } from "react"
-import { Button, Image, Keyboard, Pressable, StatusBar, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
+import { Button, Image, Keyboard, Pressable, ScrollView, StatusBar, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BuildMonitor } from "../App"
 import { format } from 'date-fns'
@@ -77,7 +77,7 @@ const CustomDrawer = ({ navigation }) => {
     }
     
     return user && (
-        <DrawerContentScrollView style={{backgroundColor:'#222836'}}>
+        <DrawerContentScrollView scrollEnabled={false} style={{backgroundColor:'#222836'}}>
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Image resizeMode='contain' resizeMethod='resize' style={{width: 130, height: 32}} source={require('../assets/logoLight.png')} />
@@ -99,9 +99,11 @@ const CustomDrawer = ({ navigation }) => {
                         <View style={{width:'90%', borderWidth:2, borderColor:'#42b3ff', alignSelf:'center', margin:10, borderRadius:5}}>
                             <MyButton onPress={() => navigation.navigate('Информация проекта')} title={'Показать сведения о проекте'} custom={{text: {color:'#42b3ff', width:'100%'}, button: {justifyContent:'center', alignItems:'center', paddingTop:7, paddingBottom:7, width:'100%'}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
                         </View>
-                        <View style={styles.listContainer}>
-                            {chosedProject.layers.filter((pr) => pr.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos).map((layer) => <Item key={layer.name} isProject={false} item={layer} />)}
-                        </View>
+                        <ScrollView style={{width:'100%', maxHeight:'70%'}}>
+                            <View style={styles.listContainer}>
+                                {chosedProject.layers.filter((pr) => pr.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos).map((layer) => <Item key={layer.name} isProject={false} item={layer} />)}
+                            </View>
+                        </ScrollView>
                         <View style={{borderWidth:2, borderColor:'#42b3ff', alignSelf:'center', margin:10, borderRadius:5}}>
                             <MyButton onPress={() => navigation.navigate('Manage Layers')} title={'Управление слоями'} custom={{text: {color:'#42b3ff', paddingLeft:20, paddingRight:20}, button: {justifyContent:'center', alignItems:'center', paddingLeft:'10%', paddingRight:'10%', paddingTop:7, paddingBottom:7}, container:{width:'100%', alignItems:'center', justifyContent:'center'}}} />
                         </View>
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
       flex: 1,
       color:'white',
       alignItems: 'flex-start',
-      justifyContent:'space-between',
+    //   justifyContent:'space-between',
     },
     header: {
         color:'white',

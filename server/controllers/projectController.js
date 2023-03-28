@@ -111,8 +111,8 @@ class ProjectController {
     }
     async getLayers(req, res, next) {
         try {
-            const {projectId} = req.body
-            const layers = await Layer.findAll({where:{projectId}})
+            const {projectId} = req.query
+            const layers = await Layer.findAll({where:{projectId}, include: [{model: Task, include: [{model: TaskInfo}]}]})
             res.json(layers)
         } catch (e) {
             return next(ApiError.badRequest(e.message))

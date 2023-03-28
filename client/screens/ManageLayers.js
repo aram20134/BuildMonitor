@@ -1,10 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Image, Keyboard, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer, ScaleDecorator } from "react-native-draggable-flatlist"
+import { NestableDraggableFlatList, NestableScrollContainer, ScaleDecorator } from "react-native-draggable-flatlist"
 import { BaseButton, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import { Header } from "react-native/Libraries/NewAppScreen"
-import { changeLayersPos, getProjects } from "../api/projectAPI"
+import { changeLayersPos, getProjects, getLayers } from "../api/projectAPI"
 import { BuildMonitor } from "../App"
 import MySearch from "../compontents/MySearch"
 
@@ -13,13 +13,15 @@ const ManageLayers = ({ navigation }) => {
 	const [layers, setLayers] = useState([])
 	const { chosedProject, setChosedProject, setProjects } = useContext(BuildMonitor)
 	const [refreshing, setRefreshing] = useState(false)
+	const [dragging, setDragging] = useState(false)
 
 	const onRefresh = () => {
-		setLayers(chosedProject.layers)
+		// setLayers(chosedProject.layers)
+		getLayers(chosedProject.id).then((res) => setLayers(res))
 	}
 
 	useEffect(() => {
-		if (layers.length) {
+		if (layers) {
 			changeLayersPos(layers).then((res) => console.log(res))
 			setChosedProject(prev => ({...prev, layers: layers}))
 		}
@@ -59,8 +61,9 @@ const ManageLayers = ({ navigation }) => {
 	}
 
 	return (
-		<NestableScrollContainer refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-			<GestureHandlerRootView>
+		//
+		<NestableScrollContainer refreshControl={<RefreshControl enabled={!dragging} refreshing={refreshing} onRefresh={onRefresh} />} >
+			<GestureHandlerRootView> 
 				<View style={styles.container}>
 					<MySearch search={search} setSearch={setSearch} />
 					<View style={{...styles.cont, marginTop:10, marginBottom:20, padding:0, borderRadius:10}}>
@@ -68,7 +71,7 @@ const ManageLayers = ({ navigation }) => {
 					</View>
 					<View style={{...styles.cont, marginBottom:20, padding:0, borderRadius:10}}>
 						{/* {layers?.filter((layer) => layer.name.toLowerCase().includes(search.toLowerCase())).map((layer, i) => <Item layer={layer} i={i} />)} */}
-						{layers && <NestableDraggableFlatList data={layers?.filter((layer) => layer.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos)} onDragEnd={({data}) => setLayers(data.map((layer, i) => ({...layer, pos: i}) ))} keyExtractor={(item) => item.id} renderItem={Item} />}
+						{layers && <NestableDraggableFlatList onDragBegin={() => setDragging(true)} data={layers?.filter((layer) => layer.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos)} onDragEnd={async ({data}) => {await setLayers(data.map((layer, i) => ({...layer, pos: i}) )), setDragging(false)}} keyExtractor={(item) => item.id} renderItem={Item} />}
 					</View>
 				</View>
 			</GestureHandlerRootView>
