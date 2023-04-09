@@ -328,7 +328,7 @@ const Plans = () => {
           <ImageBackground style={{justifyContent:'center', display:'flex', alignItems:'center', flex:1, width:'100%'}} imageStyle={{opacity:0.2}} resizeMode='repeat' resizeMethod='auto' source={require('../assets/backBlueprint.jpg')}>
             <Image source={require('../assets/blueprint.png')} style={{width:100, height:100, marginBottom:30}} />
             <Text style={{fontSize:24, color:'#4293ff', marginBottom:30}}>Для выбранного слоя нет плана</Text>
-            <Button onPress={() => navigation.navigate('Manage Layers')} title="Загрузить чертёж" />
+            {/* <Button onPress={() => navigation.navigate('Manage Layers')} title="Загрузить чертёж" /> */}
           </ImageBackground>
       </View>
     )
