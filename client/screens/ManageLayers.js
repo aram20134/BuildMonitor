@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native"
 import { useCallback, useContext, useEffect, useState } from "react"
-import { Image, Keyboard, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Image, Keyboard, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration, PermissionsAndroid } from "react-native"
 import { NestableDraggableFlatList, NestableScrollContainer, ScaleDecorator } from "react-native-draggable-flatlist"
 import { BaseButton, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import { Header } from "react-native/Libraries/NewAppScreen"
@@ -19,8 +19,9 @@ const ManageLayers = ({ navigation }) => {
 		// setLayers(chosedProject.layers)
 		getLayers(chosedProject.id).then((res) => setLayers(res))
 	}
-
+	
 	useEffect(() => {
+		
 		if (layers) {
 			changeLayersPos(layers).then((res) => console.log(res))
 			setChosedProject(prev => ({...prev, layers: layers}))
@@ -35,7 +36,7 @@ const ManageLayers = ({ navigation }) => {
 	
 	// setLayers(prev => prev.map((layer, i) => ({...layer, pos: i}) )), 
 	// () => setLayers(prev => prev.map((layer, i) => ({...layer, pos: i}) ))
-
+	
 	const BtnIco = () => {
 		return (
 			<GestureHandlerRootView>
@@ -51,7 +52,7 @@ const ManageLayers = ({ navigation }) => {
 
 	const Item = ({item, drag, isActive, getIndex}) => {
 		return (
-				<BaseButton onLongPress={drag} style={{borderRadius:10}}>
+				<BaseButton onPress={() => Vibration.vibrate()} onLongPress={drag} style={{borderRadius:10}}>
 					<View accessible accessibilityRole="button" style={{justifyContent:'center'}}>
 						<Text style={{padding:10, color:'#005D99', fontWeight:'500'}}>{item.name}</Text>
 					</View>
@@ -71,7 +72,7 @@ const ManageLayers = ({ navigation }) => {
 					</View>
 					<View style={{...styles.cont, marginBottom:20, padding:0, borderRadius:10}}>
 						{/* {layers?.filter((layer) => layer.name.toLowerCase().includes(search.toLowerCase())).map((layer, i) => <Item layer={layer} i={i} />)} */}
-						{layers && <NestableDraggableFlatList onDragBegin={() => setDragging(true)} data={layers?.filter((layer) => layer.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos)} onDragEnd={async ({data}) => {await setLayers(data.map((layer, i) => ({...layer, pos: i}) )), setDragging(false)}} keyExtractor={(item) => item.id} renderItem={Item} />}
+						{layers && <NestableDraggableFlatList onDragBegin={() => {setDragging(true)}} data={layers?.filter((layer) => layer.name.toLowerCase().includes(search.toLowerCase())).sort((a, b) => a.pos - b.pos)} onDragEnd={async ({data}) => {await setLayers(data.map((layer, i) => ({...layer, pos: i}) )), setDragging(false)}} keyExtractor={(item) => item.id} renderItem={Item} />}
 					</View>
 				</View>
 			</GestureHandlerRootView>

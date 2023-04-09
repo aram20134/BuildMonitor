@@ -22,7 +22,7 @@ const Task = ({ route, navigation }) => {
       navigation.setOptions({
         title: `${task.id} - ${task.name}`,
         headerRight: () => (
-          <Button title="Удалить" color={'darkred'} onPress={() => delTask(task.id)} />
+          <Button title="Удалить" color={'darkred'} onPress={() => delTask(task.id).then(() => navigation.goBack())} />
         )
       })
     }, [navigation])

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, Dimensions, Image, ImageBackground, RefreshControl, StyleSheet, Text, UIManager, View, findNodeHandle, ScrollView } from "react-native";
+import { Button, Dimensions, Image, ImageBackground, RefreshControl, StyleSheet, Text, UIManager, View, findNodeHandle, ScrollView, PanResponder, Animated } from "react-native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BuildMonitor } from "../App";
@@ -211,8 +211,8 @@ const Tasks = () => {
                     <Text>{task.name}</Text>
                   </View>
                   <View style={{display:'flex', flexDirection:'row', alignItems:'center', marginTop:5}}>
-                    <Text style={{marginRight:7, color:'white', borderWidth:1, backgroundColor:'#b2b2b2', borderColor:'#b2b2b2', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
-                    <Text style={{borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
+                    <Text style={{marginRight:7, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#b2b2b2', borderColor:'#b2b2b2', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
+                    <Text style={{borderWidth:1, marginRight:7, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
                     {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
                     {priority && <PerfImage />}
@@ -271,29 +271,6 @@ const Tasks = () => {
 
 const Plans = () => {
     const { chosedLayer } = useContext(BuildMonitor)
-    const navigation = useNavigation()
-    const [x, setX] = useState(0)
-    const [y, setY] = useState(0)
-    const [imageSize, setImageSize] = useState({width: 0, height:0})
-    const [pos, setPos] = useState(false)
-    const img = useRef(null)
-
-    const handle = (e, gesture, bounds) => {
-      // console.log(e.nativeEvent)
-      // setX(e?.nativeEvent?.pageX - e?.nativeEvent?.locationX)
-      // setY(e?.nativeEvent?.pageY - e?.nativeEvent?.locationY)
-      // setX(e?.nativeEvent?.locationX)
-      // setY(e?.nativeEvent?.locationY)
-      // console.log(x, y)
-      // console.log(e?.nativeEvent)
-      UIManager.measure(findNodeHandle(img.current), (x, y, w, h) => console.log(x, y, w, h))
-      
-  }
-
-  useEffect(() => {
-    // Image.getSize(`${REACT_NATIVE_API_URL}static/layerImages/${chosedLayer.plan}`, (w, h) => setImageSize({width:w, height:h}))
-  }, [])
-  
 
     if (!chosedLayer) {
       return (
@@ -303,24 +280,39 @@ const Plans = () => {
         </View>
       )
     }
-    
+
+    // const pan = useRef(new Animated.ValueXY()).current;
+
+    // const panResponder = useRef(
+    //   PanResponder.create({
+    //     onMoveShouldSetPanResponder: () => true,
+    //     onPanResponderGrant: () => {
+    //       pan.setOffset({
+    //         x: pan.x._value,
+    //         y: pan.y._value
+    //       });
+    //     },
+    //     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {useNativeDriver:false}),
+    //     onPanResponderRelease: () => {
+    //       pan.flattenOffset();
+    //     }
+    //   })
+    // ).current;
+
     return chosedLayer.plan ? (
       <View style={styles.container}>
           <StatusBar style="auto" />
           <ImageBackground style={{justifyContent:'center', display:'flex', alignItems:'center', flex:1, width:'100%'}} imageStyle={{opacity:0.2}} resizeMode='repeat' resizeMethod='auto' source={require('../assets/backBlueprint.jpg')}>
             <ImageZoom maxScale={2} enableSwipeDown={false} minScale={1} cropWidth={Dimensions.get('screen').width} cropHeight={1200} imageWidth={410} imageHeight={250}>
-              {/* <Image source={require('../assets/marker.png')} style={{color:'white', zIndex:200, width:20, height:20, position:'absolute', left:x, top:y}} /> */}
+              {/* <Animated.View style={{transform: [{ translateX: pan.x }, { translateY: pan.y }], zIndex:1000}} {...panResponder.panHandlers}>
+                <Image source={require('../assets/marker.png')} style={{color:'white', zIndex:200, width:20, height:20, position:'absolute'}} />
+              </Animated.View> */}
               <Image source={{uri: `${REACT_NATIVE_API_URL}static/layerImages/${chosedLayer.plan}`, height:'100%', width:'100%'}} resizeMode='cover'  />  
-              {/* <Draggable maxY={350} minY={-150} maxX={650} minX={'100%'} onDragRelease={handle}>
-                <View accessible={true} ref={img} style={{width:420, height:250, alignItems:'center', justifyContent:'center'}}>
-                  <View style={{borderBottomWidth:1, borderBottomColor:'red', width:1000, transform:[{rotate:'90deg'}], borderStyle:'dashed'}}></View>
-                  <Image style={{width:50, height:50, zIndex:200}} source={require('../assets/marker.png')} />
-                  <View style={{borderBottomWidth:1, borderBottomColor:'red', width:1000, borderStyle:'dashed'}}></View>
-                </View>
-              </Draggable> */}
             </ImageZoom>
           </ImageBackground>
           {/* <AddTskBtn onPress={() => setPos(true)} /> */}
+          
+            {/* <View style={{width:200, height:200, backgroundColor:'red'}} /> */}
       </View>
     ) : (
       <View style={styles.container2}>

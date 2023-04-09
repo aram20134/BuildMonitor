@@ -5,7 +5,7 @@
     "slug": "BuildMonitor",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo3.png",
+    "icon": "./assets/blueprint1024.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/logo.png",
@@ -15,6 +15,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
+    
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -23,8 +24,6 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo3.png",
-        "resizeMode": "contain",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.dasigty.BuildMonitor"
