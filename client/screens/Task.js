@@ -35,14 +35,15 @@ const Task = ({ route, navigation }) => {
 
     const chooseDate = (pair) => {
       DateTimePickerAndroid.open({
-          onChange: (event, selectetDate) => setAllValues(prev => prev.map((val) => val.name === pair.name ? {...val, value: selectetDate} : val)),
+          onChange: (event, selectedDate) => setAllValues(prev => prev.map((val) => val.name === pair.name ? {...val, value: selectedDate} : val)),
           mode: 'date',
           value: new Date(),
       })
     }
+
     const chooseTime = (pair) => {
       DateTimePickerAndroid.open({
-          onChange: (event, selectetDate) => setAllValues(prev => prev.map((val) => val.name === pair.name ? {...val, value: selectetDate} : val)),
+          onChange: (event, selectedDate) => setAllValues(prev => prev.map((val) => val.name === pair.name ? {...val, value: selectedDate} : val)),
           mode: 'time',
           value: new Date(),
           is24Hour: true
@@ -54,17 +55,18 @@ const Task = ({ route, navigation }) => {
         const createTask = new FormData()
         const author = user.name
         const taskId = task.id
+        console.log(allValues)
         createTask.append('allValues', JSON.stringify(allValues))
         createTask.append('formId', task.formId)
         createTask.append('layerId', task.layerId)
         createTask.append('author', author)
         createTask.append('taskId', taskId)
-        addTask(createTask).then((res) => setAllValues(res.taskInfos))
+        addTask(createTask)
+        // setAllValues(res.taskInfos))
       }, 300);
       return () => {
         clearTimeout(timer)
       }
-      
     }, [allValues])
 
     const InfoBlock = () => {

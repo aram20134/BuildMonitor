@@ -33,7 +33,6 @@ const Login = ({ navigation }) => {
     log(email, password).then(res => {
       setIsAuth(true)
       setUser(res)
-      return res
     }).catch(e => {
       setTriggerError(true)
       setTriggerError(false)

@@ -40,7 +40,7 @@ const ProjectInfo = ({navigation}) => {
                     <View style={styles.info}><Text>Почтовый индекс</Text><Text>{chosedProject.postalCode}</Text></View>
                     <View style={styles.info}><Text>Город</Text><Text>{chosedProject.city}</Text></View>
                     <View style={styles.info}><Text>Страна</Text><Text>{chosedProject.country}</Text></View>
-                    <View style={{margin:15}}><Button title="Редактировать подробные сведения" /></View>
+                    {/* <View style={{margin:15}}><Button title="Редактировать подробные сведения" /></View> */}
                 </View>
             </View>
         </ScrollView>

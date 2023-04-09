@@ -14,18 +14,28 @@ const MyError = ({errorMsg, trigger}) => {
         }
     }, [])
 
-    const Animate = () => {
-        bottom.value = withSpring(10)
-        opacity.value = withTiming(1)
+    // const Animate = () => {
+    //     bottom.value = withSpring(10)
+    //     opacity.value = withTiming(1)
         
-        let timer = setTimeout(() => {
-            bottom.value = withSpring(-150)
-            opacity.value = withTiming(0)
-        }, 3000);
-    }
+    //     var timer = setTimeout(() => {
+    //         bottom.value = withSpring(-150)
+    //         opacity.value = withTiming(0)
+    //     }, 3000);
+    // }
+
     useEffect(() => {
         if (trigger) {
-            Animate()
+            bottom.value = withSpring(10)
+            opacity.value = withTiming(1)
+        
+            var timer = setTimeout(() => {
+                bottom.value = withSpring(-150)
+                opacity.value = withTiming(0)
+            }, 3000);
+        }
+        return () => {
+            clearTimeout(timer)
         }
     }, [trigger])
     
