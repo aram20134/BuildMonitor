@@ -1,6 +1,6 @@
 # BuildMonitor
 React Native App - Monitoring of tasks in the process of building  
-For tests:  
+For tests:\
 login - test@mail.ru  
 password - Vardanyan20134  
 ![image](https://user-images.githubusercontent.com/85961114/231185411-f43fc879-9bae-42ac-943d-b1d9d9cb14b6.png)
