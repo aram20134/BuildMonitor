@@ -37,7 +37,7 @@ const ProjectStats = () => {
   useEffect(() => {
     var allTasks = chosedProject.layers.reduce((acc, cur) => {
       if (cur.tasks.length) {
-        acc.push(...cur.tasks.map((task) => task.taskInfos.filter((taskInfo) => taskInfo.name === 'Статус')).flat(1))
+        acc.push(...cur.tasks.map((task) => task.taskInfos.filter((taskInfo) => taskInfo.name === 'Статус' && taskInfo.value !== null)).flat(1))
       }
       return acc
     }, [])

@@ -1,14 +1,11 @@
-import { format } from "date-fns"
-import { ru } from "date-fns/locale"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Button, Dimensions, Image, StyleSheet, Text, View, ScrollView, PanResponder, Animated } from "react-native"
-import { BaseButton, GestureHandlerRootView, RotationGestureHandler } from "react-native-gesture-handler"
-import { SafeAreaView } from "react-native-safe-area-context"
 import { REACT_NATIVE_API_URL } from "../api/variables"
 import { BuildMonitor } from "../App"
 import ArrowButton from "../compontents/ArrowButton"
-import ImageZoom from 'react-native-image-pan-zoom';
-import Draggable from 'react-native-draggable';
+
+import dayjs from "dayjs"
+require('dayjs/locale/ru')
 
 const ProjectInfo = ({navigation}) => {
     const { chosedProject } = useContext(BuildMonitor)
@@ -33,8 +30,8 @@ const ProjectInfo = ({navigation}) => {
                     <Text style={{marginLeft:15, marginTop:5, fontWeight:'bold', fontSize:16}}>Информация о проекте</Text>
                     <View style={styles.info}><Text>Код проекта</Text><Text>{chosedProject.code}</Text></View>
                     <View style={styles.info}><Text>Описание</Text><Text>{chosedProject.description}</Text></View>
-                    <View style={styles.info}><Text>Начало проекта</Text><Text>{format(new Date(chosedProject.dateStart), 'dd.MM.yyyy', {locale: ru})}</Text></View>
-                    <View style={styles.info}><Text>Завершение проекта</Text><Text>{format(new Date(chosedProject.dateEnd), 'dd.MM.yyyy', {locale: ru})}</Text></View>
+                    <View style={styles.info}><Text>Начало проекта</Text><Text>{dayjs(new Date(chosedProject.dateStart)).locale('ru').format('DD.MM.YYYY')}</Text></View>
+                    <View style={styles.info}><Text>Завершение проекта</Text><Text>{dayjs(new Date(chosedProject.dateEnd)).locale('ru').format('DD.MM.YYYY')}</Text></View>
                     <View style={styles.info}><Text>Веб-страница проекта</Text><Text>{chosedProject.webPage}</Text></View>
                     <View style={styles.info}><Text>Улица</Text><Text>{chosedProject.street}</Text></View>
                     <View style={styles.info}><Text>Почтовый индекс</Text><Text>{chosedProject.postalCode}</Text></View>

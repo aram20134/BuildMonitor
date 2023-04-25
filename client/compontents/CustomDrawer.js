@@ -3,39 +3,48 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { Button, Image, Keyboard, Pressable, ScrollView, StatusBar, StyleSheet, Text, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BuildMonitor } from "../App"
-import { format } from 'date-fns'
-import { ru } from 'date-fns/locale'
 import { BaseButton, FlatList, GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import { getProjects } from "../api/projectAPI"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import MyButton from "./MyButton"
+import dayjs from "dayjs"
+require('dayjs/locale/ru')
 
 const CustomDrawer = ({ navigation }) => {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(true)
     const { user, projects, setProjects, chosedProject, setChosedProject, setChosedLayer, chosedLayer } = useContext(BuildMonitor)
 
-    const date = format(new Date(), 'EEEE, d MMMM yyyy', {locale: ru})
+    // const date = format(new Date(), 'EEEE, d MMMM yyyy', {locale: ru})
+    const date = dayjs().locale('ru').format('dddd, d MMMM YYYY')
     
     const createProject = () => {
         navigation.navigate('Создать проект')
     }
+
     useFocusEffect(useCallback(() => {
         setLoading(true)
-        getProjects().then((res) => setProjects(res)).finally(() => setLoading(false))
+        console.log('first')
+        getProjects().then((res) => {
+            console.log('fetched')
+            setProjects(res)
+            if (chosedProject) {
+                setChosedProject(res.filter((prj) => prj.id === chosedProject.id)[0])
+            }
+        }).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
     }, []))
+
     const drawer = useDrawerStatus()
 
-    useEffect(() => {
-      getProjects().then((res) => {
-        console.log('fetched')
-        setProjects(res)
-        if (chosedProject) {
-            setChosedProject(res.filter((prj) => prj.id === chosedProject.id)[0])
-        }
-    }).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
-    }, [drawer])
-    
+    // useEffect(() => {
+        // getProjects().then((res) => {
+        //     console.log('fetched')
+        //     setProjects(res)
+        //     if (chosedProject) {
+        //         setChosedProject(res.filter((prj) => prj.id === chosedProject.id)[0])
+        //     }
+        // }).finally(() => setLoading(false)).catch((e) => console.log('getprj', e.response))
+    // }, [])
 
     useEffect(() => {
       setSearch('')

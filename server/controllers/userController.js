@@ -35,6 +35,7 @@ class UserController {
     }
     async checkLogin (req, res, next) {
         const {email} = req.body
+        console.log('check log')
         if (!email) {
             return next(ApiError.badRequest('Получены не все значения'))
         }

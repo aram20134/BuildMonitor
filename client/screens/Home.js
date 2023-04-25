@@ -5,13 +5,13 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { BuildMonitor } from "../App";
 import { BaseButton, BorderlessButton, GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 import { getTasks } from "../api/projectAPI";
 import ImageZoom from "react-native-image-pan-zoom";
 import Draggable from "react-native-draggable";
 import { REACT_NATIVE_API_URL } from "../api/variables";
-  
+import dayjs from "dayjs"
+require('dayjs/locale/ru')
+
 const Tab = createMaterialTopTabNavigator()
 
 const AddTskBtn = ({type, onPress}) => {
@@ -85,7 +85,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>
@@ -94,7 +94,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#de4317', borderColor:'#de4317', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
-                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{dayjs(new Date(makeBefore)).locale('ru').format('DD.MM.YYYY')}</Text>}
                     {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
@@ -109,7 +109,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>
@@ -118,7 +118,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#2f53c0', borderColor:'#2f53c0', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
-                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{dayjs(new Date(makeBefore)).locale('ru').format('DD.MM.YYYY')}</Text>}
                     {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
@@ -133,7 +133,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>
@@ -142,7 +142,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#63ad01', borderColor:'#63ad01', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
-                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{dayjs(new Date(makeBefore)).locale('ru').format('DD.MM.YYYY')}</Text>}
                     {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
@@ -157,7 +157,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>
@@ -166,7 +166,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#f0a801', borderColor:'#f0a801', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
-                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{dayjs(new Date(makeBefore)).locale('ru').format('DD.MM.YYYY')}</Text>}
                     {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
@@ -181,7 +181,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>
@@ -190,7 +190,7 @@ const Tasks = () => {
                     <Text style={{fontSize:12, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#646458', borderColor:'#646458', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{fontSize:12, marginRight:7, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
-                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{dayjs(new Date(makeBefore)).locale('ru').format('DD.MM.YYYY')}</Text>}
                     {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
@@ -205,7 +205,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>
@@ -214,7 +214,7 @@ const Tasks = () => {
                     <Text style={{marginRight:7, marginRight:7, color:'white', borderWidth:1, backgroundColor:'#b2b2b2', borderColor:'#b2b2b2', width: 40, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10}}>{task.id}</Text>
                     <Text style={{borderWidth:1, marginRight:7, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2', backgroundColor:'#eeee'}}>{isState}</Text>
                     {attach && <View style={{marginRight:5, borderColor:'#b2b2b2', backgroundColor:'#eeee', borderWidth:1, borderRadius:100, padding:3}}><Image source={require('../assets/attach.png')} style={{width:10, height:10}} resizeMode='contain' /></View>}
-                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{format(new Date(makeBefore), 'dd.MM.yyyy', {locale: ru})}</Text>}
+                    {makeBefore && <Text style={{ fontSize:12, borderWidth:1, textAlign:'center', borderRadius:15, paddingLeft:10, paddingRight:10, borderColor:'#b2b2b2'}}>{dayjs(new Date(makeBefore)).locale('ru').format('DD.MM.YYYY')}</Text>}
                     {priority && <PerfImage />}
                   </View>
                   {task.image && <Image source={{uri: `${REACT_NATIVE_API_URL}static/taskImages/${task.image}`, height:200, width:'100%'}} resizeMode='cover' style={{marginTop:10, borderRadius:5}} />}
@@ -229,7 +229,7 @@ const Tasks = () => {
                 <View accessible accessibilityRole="button" style={styles.taskContainer}>
                   <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <Text style={{color:'gray', fontSize:10}}>Создано пользователем {task.author}</Text>
-                    <Text style={{color:'gray', fontSize:10}}>{format(new Date(task.createdAt), 'dd.MM.yyyy', {locale: ru})}</Text>
+                    <Text style={{color:'gray', fontSize:10}}>{dayjs(new Date(task.createdAt)).locale('ru').format('DD.MM.YYYY')}</Text>
                   </View>
                   <View style={{marginTop:5}}>
                     <Text>{task.name}</Text>

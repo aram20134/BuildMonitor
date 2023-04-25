@@ -8,10 +8,9 @@ import MyButton from "../compontents/MyButton";
 import MyInput from "../compontents/MyInput";
 import { BuildMonitor } from "../App"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 import { NestableScrollContainer } from "react-native-draggable-flatlist";
-import MyError from "../compontents/MyError";
+import dayjs from "dayjs"
+require('dayjs/locale/ru')
 
 const CreateTask = ({ navigation }) => {
   const [loading, setLoading] = useState(true)
@@ -98,9 +97,9 @@ const CreateTask = ({ navigation }) => {
               // timeValue={allValues[info.name] && format(allValues[info.name], 'HH:mm', {locale: ru})} dateValue={allValues[info.name] && format(allValues[info.name], 'dd.MM.yyyy', {locale: ru})} chooseTime={() => chooseTime(info)} chooseDate={() => chooseDate(info)} defaultValue={allValues[info.name]} onCheckboxChange={(val) => setAllValues({...allValues, [info.name]: val})}
               return <MyInput key={info.name} onChangeText={(text) => setAllValues({...allValues, [info.name]: text})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
             case 'date':
-              return <MyInput key={info.name} chooseDate={() => chooseDate(info)} dateValue={allValues[info.name] && format(allValues[info.name], 'dd.MM.yyyy', {locale: ru})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+              return <MyInput key={info.name} chooseDate={() => chooseDate(info)} dateValue={allValues[info.name] && dayjs(allValues[info.name]).locale('ru').format('DD.MM.YYYY')} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
             case 'time':
-              return <MyInput key={info.name} chooseTime={() => chooseTime(info)} timeValue={allValues[info.name] && format(allValues[info.name], 'HH:mm', {locale: ru})} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
+              return <MyInput key={info.name} chooseTime={() => chooseTime(info)} timeValue={allValues[info.name] && dayjs(allValues[info.name]).locale('ru').format('HH:mm')} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
             case 'image': 
               return <MyInput key={info.name} image={image} setImage={setImage} defaultValue={allValues[info.name]} title={info.name} type={info.type} placeholder={'Добавить текст'} />
             case 'checkbox':

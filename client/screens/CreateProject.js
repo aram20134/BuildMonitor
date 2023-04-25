@@ -4,11 +4,12 @@ import { BaseButton, TextInput, BorderlessButton, GestureHandlerRootView, Native
 import MyButton from "../compontents/MyButton"
 import MyInput from "../compontents/MyInput"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
-import { format } from 'date-fns'
-import { ru } from 'date-fns/locale'
 import { createProject } from "../api/projectAPI"
 import MyError from "../compontents/MyError"
 import { BuildMonitor } from "../App"
+
+import dayjs from "dayjs"
+require('dayjs/locale/ru')
 
 function reducer(state, action) {
     switch (action.type) {
@@ -116,8 +117,8 @@ const CreateProject = ({ navigation }) => {
                 <MyInput title={'Логотип проекта'} type='image' image={image} setImage={setImage} />
                 <MyInput type='text' returnKeyType="next" required onChangeText={(txt) => dispatch({type: 'projectName', payload: txt})} placeholder='Введите название проекта' title='Название проекта' />
                 <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectCode', payload: txt})} placeholder='Введите Код проекта' title='Код проекта' />
-                <MyInput type='date' dateValue={projectInfo.projectDateStart && format(projectInfo.projectDateStart, 'dd.MM.yyyy', {locale: ru})} chooseDate={() => chooseDate('projectDateStart')} placeholder='Установите дату' title='Начало проекта' />
-                <MyInput type='date' dateValue={projectInfo.projectDateEnd && format(projectInfo.projectDateEnd, 'dd.MM.yyyy', {locale: ru})} chooseDate={() => chooseDate('projectDateEnd')} placeholder='Установите дату' title='Завершение проекта' />
+                <MyInput type='date' dateValue={projectInfo.projectDateStart && dayjs(projectInfo.projectDateStart).format('DD.MM.YYYY')} chooseDate={() => chooseDate('projectDateStart')} placeholder='Установите дату' title='Начало проекта' />
+                <MyInput type='date' dateValue={projectInfo.projectDateEnd && dayjs(projectInfo.projectDateEnd).format('DD.MM.YYYY')} chooseDate={() => chooseDate('projectDateEnd')} placeholder='Установите дату' title='Завершение проекта' />
                 <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectDescription', payload: txt})} placeholder='Введите описание' title='Описание' />
                 <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectWebPage', payload: txt})} placeholder='Введите веб-страницу проекта' title='Веб-страница проекта' />
                 <MyInput type='text' returnKeyType="next" onChangeText={(txt) => dispatch({type: 'projectStreet', payload: txt})} placeholder='Введите улицу' title='Улица' />
