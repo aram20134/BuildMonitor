@@ -16,7 +16,7 @@ const CustomDrawer = ({ navigation }) => {
     const { user, projects, setProjects, chosedProject, setChosedProject, setChosedLayer, chosedLayer } = useContext(BuildMonitor)
 
     // const date = format(new Date(), 'EEEE, d MMMM yyyy', {locale: ru})
-    const date = dayjs().locale('ru').format('dddd, d MMMM YYYY')
+    const date = dayjs().locale('ru').format('dddd, D MMMM YYYY')
     
     const createProject = () => {
         navigation.navigate('Создать проект')

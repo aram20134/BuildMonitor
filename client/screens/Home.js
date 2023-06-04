@@ -281,38 +281,14 @@ const Plans = () => {
       )
     }
 
-    // const pan = useRef(new Animated.ValueXY()).current;
-
-    // const panResponder = useRef(
-    //   PanResponder.create({
-    //     onMoveShouldSetPanResponder: () => true,
-    //     onPanResponderGrant: () => {
-    //       pan.setOffset({
-    //         x: pan.x._value,
-    //         y: pan.y._value
-    //       });
-    //     },
-    //     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {useNativeDriver:false}),
-    //     onPanResponderRelease: () => {
-    //       pan.flattenOffset();
-    //     }
-    //   })
-    // ).current;
-
     return chosedLayer.plan ? (
       <View style={styles.container}>
           <StatusBar style="auto" />
           <ImageBackground style={{justifyContent:'center', display:'flex', alignItems:'center', flex:1, width:'100%'}} imageStyle={{opacity:0.2}} resizeMode='repeat' resizeMethod='auto' source={require('../assets/backBlueprint.jpg')}>
             <ImageZoom maxScale={2} enableSwipeDown={false} minScale={1} cropWidth={Dimensions.get('screen').width} cropHeight={1200} imageWidth={410} imageHeight={250}>
-              {/* <Animated.View style={{transform: [{ translateX: pan.x }, { translateY: pan.y }], zIndex:1000}} {...panResponder.panHandlers}>
-                <Image source={require('../assets/marker.png')} style={{color:'white', zIndex:200, width:20, height:20, position:'absolute'}} />
-              </Animated.View> */}
               <Image source={{uri: `${REACT_NATIVE_API_URL}static/layerImages/${chosedLayer.plan}`, height:'100%', width:'100%'}} resizeMode='cover'  />  
             </ImageZoom>
           </ImageBackground>
-          {/* <AddTskBtn onPress={() => setPos(true)} /> */}
-          
-            {/* <View style={{width:200, height:200, backgroundColor:'red'}} /> */}
       </View>
     ) : (
       <View style={styles.container2}>

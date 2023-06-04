@@ -6,6 +6,8 @@ const { User, Project, Form, FormInfo, Layer, Task, TaskInfo, ListInfo, Access }
 const ApiError = require('../error/ApiError');
 const { Sequelize } = require('sequelize');
 
+
+
 class ProjectController {
     async createProject(req, res, next) {
         try {
@@ -265,6 +267,14 @@ class ProjectController {
             next(ApiError.badRequest(e.message))
         }
     }
+    // async testMessage (req, res, next) {
+    //     try {
+    //         getMessaging()
+    //     } catch (e) {
+    //         console.log(e)
+    //         next(ApiError.badRequest(e.message))
+    //     }
+    // }
 }
 
 module.exports = new ProjectController()

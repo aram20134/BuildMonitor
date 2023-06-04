@@ -18,6 +18,29 @@ app.use(fileUpload())
 app.use('/api', router)
 app.use(errorHandle)
 
+// const admin = require('firebase-admin');
+
+// const serviceAccount = require('./project-kakasha-firebase-adminsdk-wv2js-b4919b0340.json');
+// const schedule = require('node-schedule');
+
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     databaseURL: 'https://project-kakasha-default-rtdb.firebaseio.com'
+// })
+
+// const message = {
+//     notification: {
+//       title: 'New message',
+//       body: 'You have a new message!'
+//     }
+// };
+
+// schedule.scheduleJob(new Date(2023, 03, 27, 21, 30, 0), () => {
+//     console.log('first')
+//     admin.messaging().sendToTopic('/topics/project', message, {})
+//     .then((res) => console.log('sended', res))
+// })
+
 const start = async () => {
     try {
         await sequelize.authenticate()
